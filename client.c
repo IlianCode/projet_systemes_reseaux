@@ -47,6 +47,9 @@ int main ( int argc , char * argv[]){
     //send a message to the server
     int message = 2580;
     write(socketClient, &message, sizeof(int));
+    int reponse= 0;
+    read(socketClient, &reponse, sizeof(int));
+    printf("Message received from server: %d \n", reponse);
 
     close(socketClient);
     return 0;

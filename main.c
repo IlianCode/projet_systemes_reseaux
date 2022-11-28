@@ -9,6 +9,8 @@
 
 void createProcessClient(int socketClient, int socketServer);
 void handleClient(int socketClient);
+void end_of_service();
+
 
 
 int main ( int argc , char * argv[]){
@@ -17,7 +19,7 @@ int main ( int argc , char * argv[]){
     int binded;
     int clientAddresseLen;
     char* buffer[1024];
-
+    struct sigaction sign;
     //create a tcpip server socket
     //create a listening socket
     socketServer = socket(AF_INET, SOCK_STREAM, 0);
@@ -26,6 +28,10 @@ int main ( int argc , char * argv[]){
     adresse.sin_port = htons(9999);
     adresse.sin_addr.s_addr = htonl(INADDR_ANY);
    
+    //prevent from zombies process
+    sign.sa_handler = end_of_child;
+    sign.sa_flags = SA_RESTART;
+    sigaction(SIGCHLD, &sign, NULL);
 
    //check if socker server is running
     if (socketServer == -1){
@@ -73,6 +79,8 @@ void createProcessClient(int socketClient, int socketServer){
             printf("Error creating process");
             exit(1);
         case 0:
+            close(socketServer);
+
             handleClient(socketClient);
             printf("Client accepted successfully\n");
             exit(0);
@@ -90,7 +98,13 @@ void handleClient(int socketClient){
     //receive the message from the client
     read(socketClient, &message, sizeof(int));
     printf("Message received from client: %d \n", message);
+    int reponse = 7;
+    write(socketClient, &reponse, sizeof(int));
     //close the socket
     close(socketClient);
 
+}
+
+void end_of_child(){
+    wait(NULL);
 }
