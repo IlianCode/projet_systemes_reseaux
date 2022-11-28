@@ -7,6 +7,8 @@
 #include <netinet/in.h>
 #include <sys/wait.h>
 
+void createProcessClient(int socketClient, int socketServer);
+void handleClient(int socketClient);
 
 
 int main ( int argc , char * argv[]){
@@ -49,16 +51,41 @@ int main ( int argc , char * argv[]){
         printf("Socket listening successfully");
     }
     clientAddresseLen = sizeof(adresse);
-    //start accepting connections
-    socketClient = accept(socketServer, (struct sockaddr *)&adresse, &clientAddresseLen);
 
     while(1){
-
-
-     }
+        //listening for query from client
+        socketClient = accept(socketServer, (struct sockaddr *)&adresse, &clientAddresseLen);
+ 
+        //if a connexion is established call the function createProcessClient
+        if (socketClient != -1){
+            createProcessClient(socketClient, socketServer);
+        }
     return 0;
+}
+}   
+void createProcessClient(int socketClient, int socketServer){
+    switch (fork()){
+        case -1:
+            printf("Error creating process");
+            exit(1);
+        case 0:
+            //close the listening socket
+            close(socketServer);
+            //call the function to handle the client
+            handleClient(socketClient);
+            exit(0);
+        default:
+            close(socketClient);
+    }
+}
 
+//function to listen to the client query
+void handleClient(int socketClient){
+    printf("Client connected");
 
+    //send a "10" to the client to confirm the connexion
+    send(socketClient, "10", 1, 0);
+    //close the socket
+    close(socketClient);
 
 }
-   
