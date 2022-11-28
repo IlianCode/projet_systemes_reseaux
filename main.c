@@ -55,7 +55,10 @@ int main ( int argc , char * argv[]){
     while(1){
         //listening for query from client
         socketClient = accept(socketServer, (struct sockaddr *)&adresse, &clientAddresseLen);
- 
+        if (socketClient == -1){
+            printf("Error accepting client");
+            exit(1);
+        }
         //if a connexion is established call the function createProcessClient
         if (socketClient != -1){
             createProcessClient(socketClient, socketServer);
@@ -69,11 +72,9 @@ void createProcessClient(int socketClient, int socketServer){
             printf("Error creating process");
             exit(1);
         case 0:
-            //close the listening socket
-            close(socketServer);
-            //call the function to handle the client
-            handleClient(socketClient);
-            exit(0);
+     else {
+            printf("Client accepted successfully");
+        }           exit(0);
         default:
             close(socketClient);
     }
