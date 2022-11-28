@@ -9,7 +9,7 @@
 
 void createProcessClient(int socketClient, int socketServer);
 void handleClient(int socketClient);
-void end_of_service();
+void end_of_child();
 
 
 
