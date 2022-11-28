@@ -16,6 +16,7 @@ int main ( int argc , char * argv[]){
     struct sockaddr_in adresse;
     int binded;
     int clientAddresseLen;
+    char* buffer[1024];
 
     //create a tcpip server socket
     //create a listening socket
@@ -31,7 +32,7 @@ int main ( int argc , char * argv[]){
         printf("Error creating socket");
         exit(1);
     } else {
-        printf("Socket created successfully");
+        printf("Socket created successfully \n");
     }
 
     //attach the listening socket to an address
@@ -40,7 +41,7 @@ int main ( int argc , char * argv[]){
         printf("Error binding socket");
         exit(1);
     } else {
-        printf("Socket binded successfully");
+        printf("Socket binded successfully\n");
     }
 
     //start listenning on the socket
@@ -48,11 +49,11 @@ int main ( int argc , char * argv[]){
         printf("Error listening on socket");
         exit(1);
     } else {
-        printf("Socket listening successfully");
+        printf("Socket listening successfully\n");
     }
     clientAddresseLen = sizeof(adresse);
-
-    while(1){
+    int n = 1;
+    while(n==1){
         //listening for query from client
         socketClient = accept(socketServer, (struct sockaddr *)&adresse, &clientAddresseLen);
         if (socketClient == -1){
@@ -60,11 +61,11 @@ int main ( int argc , char * argv[]){
             exit(1);
         }
         //if a connexion is established call the function createProcessClient
-        if (socketClient != -1){
             createProcessClient(socketClient, socketServer);
-        }
-    return 0;
-}
+        
+    }
+        return 0;
+
 }   
 void createProcessClient(int socketClient, int socketServer){
     switch (fork()){
@@ -72,9 +73,9 @@ void createProcessClient(int socketClient, int socketServer){
             printf("Error creating process");
             exit(1);
         case 0:
-     else {
-            printf("Client accepted successfully");
-        }           exit(0);
+            handleClient(socketClient);
+            printf("Client accepted successfully\n");
+            exit(0);
         default:
             close(socketClient);
     }
@@ -82,10 +83,13 @@ void createProcessClient(int socketClient, int socketServer){
 
 //function to listen to the client query
 void handleClient(int socketClient){
-    printf("Client connected");
-
+    printf("Client connected\n");
+    int message =0;
     //send a "10" to the client to confirm the connexion
-    send(socketClient, "10", 1, 0);
+  //  send(socketClient, "10", 1, 0);
+    //receive the message from the client
+    read(socketClient, &message, sizeof(int));
+    printf("Message received from client: %d \n", message);
     //close the socket
     close(socketClient);
 
