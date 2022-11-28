@@ -13,6 +13,7 @@ int main ( int argc , char * argv[]){
     int socketServer, socketClient;
     struct sockaddr_in adresse;
     int binded;
+    int clientAddresseLen;
 
     //create a tcpip server socket
     //create a listening socket
@@ -47,14 +48,16 @@ int main ( int argc , char * argv[]){
     } else {
         printf("Socket listening successfully");
     }
-
+    clientAddresseLen = sizeof(adresse);
     //start accepting connections
-    socketClient = accept(socketServer, NULL, NULL);
+    socketClient = accept(socketServer, (struct sockaddr *)&adresse, &clientAddresseLen);
 
     while(1){
-        //do something
-    }
+
+
+     }
     return 0;
+
 
 
 }
