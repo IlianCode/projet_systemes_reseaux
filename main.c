@@ -94,13 +94,15 @@ void createProcessClient(int socketClient, int socketServer){
 void handleClient(int socketClient){
     printf("Client connected\n");
     int message =0;
+  
     //send a "10" to the client to confirm the connexion
   //  send(socketClient, "10", 1, 0);
     //receive the message from the client
+     int reponse = 1;
+    write(socketClient, &reponse, sizeof(int));
     read(socketClient, &message, sizeof(int));
     printf("Message received from client: %d \n", message);
-    int reponse = 7;
-    write(socketClient, &reponse, sizeof(int));
+    
     //close the socket
     close(socketClient);
 
