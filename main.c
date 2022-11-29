@@ -33,6 +33,7 @@ int main ( int argc , char * argv[]){
     sign.sa_flags = SA_RESTART;
     sigaction(SIGCHLD, &sign, NULL);
 
+
    //check if socker server is running
     if (socketServer == -1){
         printf("Error creating socket");
