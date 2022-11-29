@@ -15,7 +15,7 @@ void end_of_child();
 
 int main ( int argc , char * argv[]){
     int socketServer, socketClient;
-    struct sockaddr_in adresse;
+    struct sockaddr_in adresse , struct2;
     int binded;
     int clientAddresseLen;
     char* buffer[1024];
@@ -61,7 +61,7 @@ int main ( int argc , char * argv[]){
     int n = 1;
     while(n==1){
         //listening for query from client
-        socketClient = accept(socketServer, (struct sockaddr *)&adresse, &clientAddresseLen);
+        socketClient = accept(socketServer, (struct sockaddr *)&struct2, &clientAddresseLen);
         if (socketClient == -1){
             printf("Error accepting client");
             exit(1);
