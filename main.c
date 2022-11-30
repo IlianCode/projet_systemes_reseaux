@@ -107,7 +107,7 @@ void createProcessClient(int socketClient, int socketServer)
         close(socketServer);
 
         handleClient(socketClient);
-        printf("Client accepted successfully\n");
+        printf("Client disconnected successfully\n");
         exit(0);
     default:
         close(socketClient);
@@ -126,7 +126,7 @@ void handleClient(int socketClient)
         // receive the query type of the client
         int clientAnswer = 0;
         read(socketClient, &clientAnswer, sizeof(int));
-        printf("Message received from client: %d \n", clientAnswer);
+        //printf("Message received from client: %d \n", clientAnswer);
         //================================
 
        // sendResponseToQuery(clientAnswer, socketClient);
@@ -246,16 +246,16 @@ void queryTreatment(int clientAnswer, char *clientReference, int socketClient)
                     strcpy(cNbPages, strtok(NULL, "#"));
                     strcpy(cRate, strtok(NULL, "#"));
 
-                    printf("\n \n TATITAOU \n \n");
+               //     printf("\n \n TATITAOU \n \n");
 
                     if (strcmp(cRef, clientReference) == 0)
                     {
-                        printf("Reference: %s \n", cRef);
+                       /* printf("Reference: %s \n", cRef);
                         printf("Author: %s \n", cAuthor);
                         printf("Title: %s \n", cTitle);
                         printf("Type: %s \n", cType);
                         printf("NbPages: %s \n", cNbPages);
-                        printf("Rate: %s \n", cRate);
+                        printf("Rate: %s \n", cRate);*/
 
                         char res[560];
                         strcat(res, cRef);

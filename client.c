@@ -188,7 +188,7 @@ bool askEnd(int socketClient)
     printf("%s \n", endTreatment);*/
 //================================================================================================
     
-    printf("Si vous n'avez plus de questions tapez 'oui' sinon tapez 'non'\n");
+    printf("Si vous n'avez plus de questions tapez 'non' sinon tapez 'oui'\n");
     
     char *answer;
     scanf("%s", answer);
