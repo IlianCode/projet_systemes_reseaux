@@ -12,16 +12,12 @@
 void createProcessClient(int socketClient, int socketServer);
 void handleClient(int socketClient);
 void end_of_child();
-void displayClientMenu(int socketClient);
 void sendResponseToQuery(int clientAnswer, int socketClient);
 
 int searchSize(char *str);
 void sendMessage(int socketClient, char *message);
 void queryTreatment(int clientAnswer, char *clientReference, int socketClient);
 
-char *trim(char *s);
-char *ltrim(char *s);
-char *rtrim(char *s);
 
 int main(int argc, char *argv[])
 {
@@ -30,30 +26,30 @@ int main(int argc, char *argv[])
     int binded;
     int clientAddresseLen;
     char *buffer[1024];
-    struct sigaction sign;
+    struct sigaction killzombie;
     // create a tcpip server socket
     // create a listening socket
     socketServer = socket(AF_INET, SOCK_STREAM, 0);
-
+    if (socketServer == -1)
+        {
+            printf("Error creating socket");
+            exit(1);
+        }
+        else
+        {
+            printf("Socket created successfully \n");
+        }
     adresse.sin_family = AF_INET;
     adresse.sin_port = htons(9999);
     adresse.sin_addr.s_addr = htonl(INADDR_ANY);
 
     // prevent from zombies process
-    sign.sa_handler = end_of_child;
-    sign.sa_flags = SA_RESTART;
-    sigaction(SIGCHLD, &sign, NULL);
+    killzombie.sa_handler = end_of_child;
+    killzombie.sa_flags = SA_RESTART;
+    sigaction(SIGCHLD, &killzombie, NULL);
 
     // check if socker server is running
-    if (socketServer == -1)
-    {
-        printf("Error creating socket");
-        exit(1);
-    }
-    else
-    {
-        printf("Socket created successfully \n");
-    }
+    
 
     // attach the listening socket to an address
     binded = bind(socketServer, (struct sockaddr *)&adresse, sizeof(adresse));
@@ -76,7 +72,9 @@ int main(int argc, char *argv[])
     {
         printf("Socket listening successfully\n");
     }
-    clientAddresseLen = sizeof(adresse);
+    clientAddresseLen = sizeof(struct2);
+
+    //start of the server
     int n = 1;
     while (n == 1)
     {
@@ -92,6 +90,12 @@ int main(int argc, char *argv[])
     }
     return 0;
 }
+
+
+
+
+
+//function
 void createProcessClient(int socketClient, int socketServer)
 {
     switch (fork())
@@ -118,7 +122,6 @@ void handleClient(int socketClient)
 
     while (endClient != 1)
     {
-        displayClientMenu(socketClient);
 
         // receive the message from the client
         int clientAnswer = 0;
@@ -187,12 +190,8 @@ void sendResponseToQuery(int clientAnswer, int socketClient)
     }
 }
 
-// display the menu of the client
-void displayClientMenu(int socketClient)
-{
-    char menu[282] = "Quel type de requete voulez vous faire ?\n1.  Recherche par reference \n2.  Recherche par mot clé \n3.  Recherche par auteur et par genre littéraire\n4.  Recherche par auteur et par critère: nombre de pages ou note des lecteurs\n Entrez le numero de la requete souhaité (1/2/3/4): \n";
-    write(socketClient, &menu, 282);
-}
+
+
 
 int searchSize(char *str)
 {
@@ -215,6 +214,11 @@ void sendMessage(int socketClient, char *message)
 
     write(socketClient, *&message, size);
 }
+
+
+
+
+
 
 // traitement des requete en fonction de clientAnswer
 void queryTreatment(int clientAnswer, char *clientReference, int socketClient)
@@ -252,27 +256,25 @@ void queryTreatment(int clientAnswer, char *clientReference, int socketClient)
                         printf("Rate: %s \n", cRate);
 
                         char res[560];
-                        char resRef[50] = "La reference de votre livre est : ";
-                        strcat(res, resRef);
                         strcat(res, cRef);
-                        char resAuthor[50] = "\nL auteur est: ";
+                        char resAuthor[50] = "&";
                         strcat(res, resAuthor);
                         strcat(res, cAuthor);
-                        char resTitle[50] = "\nLe titre est: ";
+                        char resTitle[50] = "&";
                         strcat(res, resTitle);
                         strcat(res, cTitle);
-                        char resType[50] = "\nLe type est: ";
+                        char resType[50] = "&";
                         strcat(res, resType);
                         strcat(res, cType);
-                        char resNbPages[50] = "\nLe nombre de pages est: ";
+                        char resNbPages[50] = "&";
                         strcat(res, resNbPages);
                         strcat(res, cNbPages);
-                        char resRate[50] = "\nLa note est: ";
+                        char resRate[50] = "&";
                         strcat(res, resRate);
                         strcat(res, cRate);
+                       
 
                         printf("%s \n", res);
-                        printf("toto");
 
                         // char * res = 'La reférence de votre livre est: ' + cRef + ' \nL auteur est: ' + cAuthor + ' \nLe titre est: ' + cTitle + ' \nLe type est: ' + cType + ' \nLe nombre de pages est: ' + cNbPages + ' \nLa note est: ' + cRate + ' \n';
                         sendMessage(socketClient, res);
@@ -293,23 +295,3 @@ void queryTreatment(int clientAnswer, char *clientReference, int socketClient)
     }
 }
 
-char *ltrim(char *s)
-{
-    while (isspace(*s))
-        s++;
-    return s;
-}
-
-char *rtrim(char *s)
-{
-    char *back = s + strlen(s);
-    while (isspace(*--back))
-        ;
-    *(back + 1) = '\0';
-    return s;
-}
-
-char *trim(char *s)
-{
-    return rtrim(ltrim(s));
-}
