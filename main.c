@@ -123,16 +123,15 @@ void handleClient(int socketClient)
     while (endClient != 1)
     {
 
-        // receive the message from the client
+        // receive the query type of the client
         int clientAnswer = 0;
         read(socketClient, &clientAnswer, sizeof(int));
         printf("Message received from client: %d \n", clientAnswer);
+        //================================
 
-        sendResponseToQuery(clientAnswer, socketClient);
+       // sendResponseToQuery(clientAnswer, socketClient);
 
-        // récuperattion et affichage réponse client étape 4
-        // traitement des requete en fonction de clientAnswer
-
+        //lecture reference envoyé par le client
         int size = 0;
         read(socketClient, &size, sizeof(int));
         printf("size = %d \n", size);
@@ -140,6 +139,9 @@ void handleClient(int socketClient)
         char clientReference[4];
         read(socketClient, &clientReference, size);
         printf("%s \n", clientReference);
+    //================================
+
+
 
         queryTreatment(clientAnswer, clientReference, socketClient);
 
@@ -155,7 +157,7 @@ void end_of_child()
 {
     wait(NULL);
 }
-
+/*
 void sendResponseToQuery(int clientAnswer, int socketClient)
 {
     switch (clientAnswer)
@@ -190,7 +192,7 @@ void sendResponseToQuery(int clientAnswer, int socketClient)
     }
 }
 
-
+*/
 
 
 int searchSize(char *str)
@@ -278,8 +280,8 @@ void queryTreatment(int clientAnswer, char *clientReference, int socketClient)
 
                         // char * res = 'La reférence de votre livre est: ' + cRef + ' \nL auteur est: ' + cAuthor + ' \nLe titre est: ' + cTitle + ' \nLe type est: ' + cType + ' \nLe nombre de pages est: ' + cNbPages + ' \nLa note est: ' + cRate + ' \n';
                         sendMessage(socketClient, res);
-                        char *endOrNot = "Si vous n'avez plus de questions tapez 'oui' sinon tapez 'non'\n";
-                        sendMessage(socketClient, endOrNot); 
+                        //char *endOrNot = "Si vous n'avez plus de questions tapez 'oui' sinon tapez 'non'\n";
+                       // sendMessage(socketClient, endOrNot); 
                         break;
                     }
                     /*else

@@ -68,21 +68,40 @@ int main(int argc, char *argv[])
 
         // char *str = "Hello world";
         // write(socketClient, &str, strlen(str));
+
+        //envoie de la reponse 1/2/3/4
         int typeQuery = 0;
         scanf("%d", &typeQuery);
         write(socketClient, &typeQuery, sizeof(int));
 
-        // reception de sendResponseToQuery
 
-        int size = 0;
+
+
+
+
+
+        // reception de sendResponseToQuery
+        printf("Vous avez selectionner la requete 1, veuillez entrer une reference. \nPar exemple: 10 \n");
+        /*int size = 0;
         read(socketClient, &size, sizeof(int));
         printf("size = %d \n", size);
 
         char msgAns[size];
         read(socketClient, msgAns, size);
-        printf("%s \n", msgAns);
+        printf("%s \n", msgAns);*/
+        //=============================
+
+
+
+
+
 
         handleClientQuery(socketClient, typeQuery);
+
+
+
+
+
 
         isRunning = askEnd(socketClient);
 
@@ -128,12 +147,14 @@ void handleClientQuery(int socketClient, int typeQuery)
     switch (typeQuery)
     {
     case 1:
+//envoie de la reference envoyé par le client
         char *reference = (char *)malloc((4) * sizeof(char));
-
         scanf("%s", reference);
-
         sendMessage(socketClient, reference);
-
+//================================================================================================
+       
+       
+       
         // reception de queryTreatment
         int size = 0;
         read(socketClient, &size, sizeof(int));
@@ -158,14 +179,17 @@ bool askEnd(int socketClient)
 {
 
     bool res = true;
-    // reception du message de fin de traitement
-    int size = 0;
+    // reception du message questionnant si le client veut continuer
+   /* int size = 0;
     read(socketClient, &size, sizeof(int));
     printf("size = %d \n", size);
     char endTreatment[size];
     read(socketClient, &endTreatment, size);
-    printf("%s \n", endTreatment);
-
+    printf("%s \n", endTreatment);*/
+//================================================================================================
+    
+    printf("Si vous n'avez plus de questions tapez 'oui' sinon tapez 'non'\n");
+    
     char *answer;
     scanf("%s", answer);
     if (strcmp(answer, "non") == 0)
