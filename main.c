@@ -277,14 +277,15 @@ void queryTreatment(int clientAnswer, char *clientReference, int socketClient)
                         // char * res = 'La reférence de votre livre est: ' + cRef + ' \nL auteur est: ' + cAuthor + ' \nLe titre est: ' + cTitle + ' \nLe type est: ' + cType + ' \nLe nombre de pages est: ' + cNbPages + ' \nLa note est: ' + cRate + ' \n';
                         sendMessage(socketClient, res);
                         char *endOrNot = "Si vous n'avez plus de questions tapez 'oui' sinon tapez 'non'\n";
-                        sendMessage(socketClient, endOrNot);
+                        sendMessage(socketClient, endOrNot); 
+                        break;
                     }
-                    else
+                    /*else
                     {
                         char *res = "Aucune référence pour votre livre n'est trouvé.";
 
                         sendMessage(socketClient, res);
-                    }
+                    }*/
                 
             }
         }
