@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -11,6 +12,7 @@
 
 void displayClientMenu();
 void handleClientQuery(int socketClient, int typeQuery);
+bool askEnd(int socketClient);
 
 int main(int argc, char *argv[])
 {
@@ -52,41 +54,52 @@ int main(int argc, char *argv[])
         printf("Connected to server \n");
     }
     //================================================================================================
+    bool isRunning = true;
     //debut reception données et envoie de reponse
+    while (isRunning)
+    {
+        //test reception menu 
+        char messageRecu[282];
+        read(socketClient, &messageRecu, 282);
+        printf("%s", messageRecu);
 
 
-        //test reception char 
-    char messageRecu[300];
-    read(socketClient, &messageRecu, 300);
-    printf("%s", messageRecu);
+        //char *str = "Hello world";
+        //write(socketClient, &str, strlen(str));
+        int typeQuery = 0;
+            scanf("%d", &typeQuery);
+            write(socketClient, &typeQuery, sizeof(int));
 
-
-    //char *str = "Hello world";
-    //write(socketClient, &str, strlen(str));
-    int typeQuery = 0;
-        scanf("%d", &typeQuery);
-        write(socketClient, &typeQuery, sizeof(int));
-
+        
     
-   
-    //reception de sendResponseToQuery
-    
-    int size = 0;
-    read(socketClient, &size, sizeof(int));
-    printf("size = %d \n", size);
+        //reception de sendResponseToQuery
+        
+        int size = 0;
+        read(socketClient, &size, sizeof(int));
+        printf("size = %d \n", size);
 
-    char msgAns[size];
-    read(socketClient, msgAns, size);
-    printf("%s \n", msgAns);
+        char msgAns[size];
+        read(socketClient, msgAns, size);
+        printf("%s \n", msgAns);
 
-    handleClientQuery(socketClient, typeQuery);
+        handleClientQuery(socketClient, typeQuery);
+        
+        isRunning=askEnd(socketClient);
 
+        //envoie 0 au serveur si isRunning = true sinon envoie 1 au serveur
+        int endClient = 0;
+        if (isRunning == true)
+        {
+            endClient = 0;
+        }
+        else
+        {
+            endClient = 1;
+        }
+        write(socketClient, &endClient, sizeof(int));
+
+    }
     //=============
-
-
-    int reponse = 0;
-    read(socketClient, &reponse, sizeof(int));
-    printf("Message received from server: %d \n", reponse);
 
 
 
@@ -117,18 +130,50 @@ void handleClientQuery(int socketClient, int typeQuery){
     {
     case 1:
         char * reference = (char*) malloc((4)*sizeof(char));
+        
         scanf("%s", reference);
+    
         sendMessage(socketClient, reference);
 
+        //reception de queryTreatment
+        int size = 0;
+        read(socketClient, &size, sizeof(int));
+        printf("size = %d \n", size);
+        char myBook[size];
+        read(socketClient, &myBook, size);     
+        printf("%s \n", myBook);
+
+
+
         break;
-    case 2:
-        /* code */
+
+
+    /*case 2:
         break;
     case 3:
-        /* code */
         break;
     case 4:
-        /* code */
-        break;
+        break;*/
     }
+     
+}
+
+bool askEnd(int socketClient){
+
+        bool res = true;
+        //reception du message de fin de traitement
+        int size = 0;
+        read(socketClient, &size, sizeof(int));
+        printf("size = %d \n", size);
+        char endTreatment[size];
+        read(socketClient, &endTreatment, size);     
+        printf("%s \n", endTreatment);
+
+        char *answer;
+        scanf("%s", answer);
+        if(strcmp(answer, "non") == 0){
+            res = false;
+        }  
+        return res;
+        
 }
