@@ -18,8 +18,8 @@ int searchSize(char *str);
 void sendMessage(int socketClient, char *message);
 void queryTreatment(int clientAnswer, int socketClient);
 
-
 void researchOne(int socketClient);
+void researchThree(int socketClient);
 
 int main(int argc, char *argv[])
 {
@@ -172,9 +172,13 @@ void queryTreatment(int clientAnswer, int socketClient)
     case 1:
         researchOne(socketClient);
         break;
+    case 3:
+        researchThree(socketClient);
+        break;
     }
 }
 
+// recherche par référence, numero 1 dans l'enoncé
 void researchOne(int socketClient)
 {
     // lecture reference client int :
@@ -238,4 +242,85 @@ void researchOne(int socketClient)
             }*/
         }
     }
+}
+
+// recherche par auteur puis par genre , numero 3 dans l'enoncé
+void researchThree(int socketClient)
+{
+    // reception authorAndGenre du client
+    // read size of authorAndGenre
+    int size = 0;
+    read(socketClient, &size, sizeof(int));
+    // read authorAndGenre
+    char authorAndGenre[size];
+    read(socketClient, &authorAndGenre, size);
+
+    printf("authorAndGenre: %s \n", authorAndGenre);
+    // split authorAndGenre in two string
+    char *author = strtok(authorAndGenre, "&");
+    char *genre = strtok(NULL, "&");
+    printf("author: %s \n", author);
+    printf("genre: %s \n", genre);
+
+    char line[1024];
+    // char clientReference[4] = "70";
+    char resTitle[500];
+
+    int count = 0;
+    // char author[50] = "Victor Hugo";
+    // char type[50] = "roman";
+
+    FILE *fp = fopen("bdd_bibliotheque.txt", "r");
+    // read the open file
+    while (fgets(line, sizeof(line), fp) != NULL)
+    {
+        if (strstr(line, author) != NULL)
+        {
+
+            char cRef[4], cAuthor[50], cTitle[50], cType[50], cNbPages[50], cRate[50];
+
+            strcpy(cRef, strtok(line, "#"));
+            strcpy(cAuthor, strtok(NULL, "#"));
+            strcpy(cTitle, strtok(NULL, "#"));
+            strcpy(cType, strtok(NULL, "#"));
+            strcpy(cNbPages, strtok(NULL, "#"));
+            strcpy(cRate, strtok(NULL, "#"));
+
+            // printf("\n \n TATITAOU \n \n");
+
+            if (strcmp(genre, cType) == 0)
+            {
+
+                printf("Reference: %s \n", cRef);
+                // printf("Author: %s \n", cAuthor);
+                printf("Title: %s \n", cTitle);
+                // printf("Type: %s \n", cType);
+                // printf("NbPages: %s \n", cNbPages);
+                // printf("Rate: %s \n", cRate);
+
+                // char * res = 'La reférence de votre livre est: ' + cRef + ' \nL auteur est: ' + cAuthor + ' \nLe titre est: ' + cTitle + ' \nLe type est: ' + cType + ' \nLe nombre de pages est: ' + cNbPages + ' \nLa note est: ' + cRate + ' \n';
+                // sendMessage(socketClient, res);
+                // char *endOrNot = "Si vous n'avez plus de questions tapez 'oui' sinon tapez 'non'\n";
+                // sendMessage(socketClient, endOrNot);
+                // break;
+
+                strcat(resTitle, "&");
+
+                strcat(resTitle, cTitle);
+                strcat(resTitle, "&");
+                strcat(resTitle, cRef);
+                count++;
+            }
+            /*else
+            {
+                char *res = "Aucune référence pour votre livre n'est trouvé.";
+
+                sendMessage(socketClient, res);
+            }*/
+        }
+    }
+    char newCount[4];
+    sprintf(newCount, "%d", count);
+    strcat(newCount, resTitle);
+    sendMessage(socketClient, newCount);
 }

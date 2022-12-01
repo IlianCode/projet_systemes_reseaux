@@ -16,6 +16,7 @@ void displayClientMenu();
 void handleClientQuery(int socketClient, int typeQuery);
 bool askEnd(int socketClient);
 void traitementCaseOne(char *myBook);
+void traitementCaseThree(char *myBooks);
 
 int main(int argc, char *argv[])
 {
@@ -124,9 +125,9 @@ void sendMessage(int socketClient, char *message)
 
 void handleClientQuery(int socketClient, int typeQuery)
 {
-    switch (typeQuery)
+    if (typeQuery == 1)
     {
-    case 1:
+
         printf("\nVous avez selectionner la requete 1 !\n ");
 
         // envoie de la reference envoyé par le client
@@ -167,14 +168,46 @@ void handleClientQuery(int socketClient, int typeQuery)
         read(socketClient, &myBook, size);
 
         traitementCaseOne(myBook);
-        break;
 
-        /*case 2:
-            break;
-        case 3:
-            break;
-        case 4:
-            break;*/
+        // case 2:
+        //    break;
+    }
+    else if (typeQuery == 3)
+    {
+        printf("\nVous avez selectionner la requete 3 !\n ");
+        printf("Veuillez entrer le nom de l'auteur. Par exemple: Victor Hugo \n");
+        char author[50];
+        scanf(" %[^\n]", author);
+
+        printf("Veuillez entrer le genre recherché. Par exemple: roman \n");
+        char *genre = (char *)malloc((50) * sizeof(char));
+        scanf("%s", genre);
+
+        // make a string with author and genre separated by a '&'
+        char *authorAndGenre = (char *)malloc((100) * sizeof(char));
+        strcpy(authorAndGenre, author);
+        strcat(authorAndGenre, "&");
+        strcat(authorAndGenre, genre);
+        printf("authorAndGenre: %s\n", authorAndGenre);
+
+        // send authorAndGenre to the server
+        sendMessage(socketClient, authorAndGenre);
+        printf("bien envoyé");
+
+        // reception of the queryTreatment
+        //  reception de queryTreatment
+        int sizeBooks = 0;
+        read(socketClient, &sizeBooks, sizeof(int));
+        char myBooks[sizeBooks];
+        read(socketClient, &myBooks, sizeBooks);
+
+        printf("\n \n mysbooks : %s \n \n", myBooks);
+        // traitementCaseOne(myBooks);
+
+          traitementCaseThree(myBooks);
+
+        //  case 4:
+        //  break;
     }
 }
 
@@ -232,4 +265,28 @@ void traitementCaseOne(char *myBook)
 void displayClientMenu()
 {
     printf("Quel type de requete voulez vous faire ?\n1.  Recherche par reference \n2.  Recherche par mot clé \n3.  Recherche par auteur et par genre littéraire\n4.  Recherche par auteur et par critère: nombre de pages ou note des lecteurs\n ");
+}
+
+void traitementCaseThree(char *myBooks)
+{
+    char cNumber[4];
+    strcpy(cNumber, strtok(myBooks, "&"));
+
+    printf("\n-------- Voici le(s) livre(s) trouvé en fonction de vos critères de recherche  --------\n");
+
+    for (int i = 0; i < atoi(cNumber) ; i++)
+    {
+        char cRef[4], cTitle[50];
+
+        strcpy(cTitle, strtok(NULL, "&"));
+        strcpy(cRef, strtok(NULL, "&"));
+        printf("-------------------------\n");
+        printf("Livre %d : ", i+1 );
+        printf("Title: %s \n", cTitle);
+        printf("Reference: %s \n", cRef);
+        printf("-------------------------\n");
+
+    }
+  
+    printf("-------------------------------------------------------------------\n");
 }
