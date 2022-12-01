@@ -172,6 +172,72 @@ void handleClientQuery(int socketClient, int typeQuery)
         // case 2:
         //    break;
     }
+    else if (typeQuery == 2)
+    {
+        printf("\nVous avez selectionner la requete 2 !\n ");
+        printf("Veuillez le nombre de mots clés que vous souhaitez (max 3).\n Tapez '1', '2' ou '3' ! \n");
+        
+        char checkNbKeyWord[2];
+        int nbKeyWord = 0;
+
+        // check if typequery is a number then send it to the server
+        //do
+        //{
+            printf("Entrez le nombre de mots clés souhaité (1/2/3): \n");
+            scanf(" %s", checkNbKeyWord);
+       // } while (checkNbKeyWord != '1' && checkNbKeyWord != '2' && checkNbKeyWord != '3');
+
+        nbKeyWord = atoi(checkNbKeyWord);
+        char sendKeyWord[60];
+        strcpy(sendKeyWord, checkNbKeyWord);
+        strcat(sendKeyWord, "&");
+
+        char keyWord1[20];
+        char keyWord2[20];
+        char keyWord3[20];
+
+        switch (nbKeyWord)
+        {
+
+        case 1:
+            printf("Veuillez entrer le mot clé 1.\n");
+            scanf("%s", keyWord1);
+            strcat(sendKeyWord, keyWord1);
+            break;
+        case 2:
+            printf("Veuillez entrer le mot clé 1.\n");
+            scanf("%s", keyWord1);
+
+            printf("Veuillez entrer le mot clé 2.\n");
+            scanf("%s", keyWord2);
+
+            strcat(sendKeyWord, keyWord1);
+            strcat(sendKeyWord, "&");
+            strcat(sendKeyWord, keyWord2);
+            break;
+        case 3:
+            printf("Veuillez entrer le mot clé 1.\n");
+            scanf("%s", keyWord1);
+
+            printf("Veuillez entrer le mot clé 2.\n");
+            scanf("%s", keyWord2);
+
+            printf("Veuillez entrer le mot clé 3.\n");
+            scanf("%s", keyWord3);
+
+            strcat(sendKeyWord, keyWord1);
+            strcat(sendKeyWord, "&");
+            strcat(sendKeyWord, keyWord2);
+            strcat(sendKeyWord, "&");
+            strcat(sendKeyWord, keyWord3);
+            break;
+        }
+        printf("sendKeyWord : %s\n", sendKeyWord);
+        sendMessage(socketClient, sendKeyWord);
+        printf("bien envoyé\n");
+
+        
+    }
     else if (typeQuery == 3)
     {
         printf("\nVous avez selectionner la requete 3 !\n ");
@@ -204,7 +270,7 @@ void handleClientQuery(int socketClient, int typeQuery)
         printf("\n \n mysbooks : %s \n \n", myBooks);
         // traitementCaseOne(myBooks);
 
-          traitementCaseThree(myBooks);
+        traitementCaseThree(myBooks);
 
         //  case 4:
         //  break;
@@ -274,19 +340,18 @@ void traitementCaseThree(char *myBooks)
 
     printf("\n-------- Voici le(s) livre(s) trouvé en fonction de vos critères de recherche  --------\n");
 
-    for (int i = 0; i < atoi(cNumber) ; i++)
+    for (int i = 0; i < atoi(cNumber); i++)
     {
         char cRef[4], cTitle[50];
 
         strcpy(cTitle, strtok(NULL, "&"));
         strcpy(cRef, strtok(NULL, "&"));
         printf("-------------------------\n");
-        printf("Livre %d : ", i+1 );
+        printf("Livre %d : ", i + 1);
         printf("Title: %s \n", cTitle);
         printf("Reference: %s \n", cRef);
         printf("-------------------------\n");
-
     }
-  
+
     printf("-------------------------------------------------------------------\n");
 }
