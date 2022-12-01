@@ -64,7 +64,6 @@ int main(int argc, char *argv[])
     {
         // test reception menu
         displayClientMenu();
-        
 
         // envoie de la reponse 1/2/3/4
         char checkTypeQuery;
@@ -80,7 +79,6 @@ int main(int argc, char *argv[])
         typeQuery = atoi(&checkTypeQuery);
         write(socketClient, &typeQuery, sizeof(int));
 
-       
         //=============================
 
         handleClientQuery(socketClient, typeQuery);
@@ -130,7 +128,7 @@ void handleClientQuery(int socketClient, int typeQuery)
     {
     case 1:
         printf("\nVous avez selectionner la requete 1 !\n ");
-        
+
         // envoie de la reference envoyé par le client
         char *checkReference = (char *)malloc((10) * sizeof(char));
         int reference = 0;
@@ -160,9 +158,6 @@ void handleClientQuery(int socketClient, int typeQuery)
         reference = atoi(checkReference);
         write(socketClient, &reference, sizeof(int));
 
-    
-
-
         //================================================================================================
 
         // reception de queryTreatment
@@ -187,7 +182,7 @@ bool askEnd(int socketClient)
 {
 
     bool res = true;
-    
+
     printf("Voulez vous faire une nouvelle recherche?\n Tapez 'non' pour sortir, sinon tapez 'oui' pour faire une nouvelle recherche ! \n");
 
     char *answer;
@@ -195,7 +190,9 @@ bool askEnd(int socketClient)
     if (strcmp(answer, "non") == 0)
     {
         res = false;
-    }else{
+    }
+    else
+    {
         res = true;
     }
     return res;

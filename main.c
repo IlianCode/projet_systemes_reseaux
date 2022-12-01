@@ -16,8 +16,10 @@ void sendResponseToQuery(int clientAnswer, int socketClient);
 
 int searchSize(char *str);
 void sendMessage(int socketClient, char *message);
-void queryTreatment(int clientAnswer, int clientReference, int socketClient);
+void queryTreatment(int clientAnswer, int socketClient);
 
+
+void researchOne(int socketClient);
 
 int main(int argc, char *argv[])
 {
@@ -31,14 +33,14 @@ int main(int argc, char *argv[])
     // create a listening socket
     socketServer = socket(AF_INET, SOCK_STREAM, 0);
     if (socketServer == -1)
-        {
-            printf("Error creating socket");
-            exit(1);
-        }
-        else
-        {
-            printf("Socket created successfully \n");
-        }
+    {
+        printf("Error creating socket");
+        exit(1);
+    }
+    else
+    {
+        printf("Socket created successfully \n");
+    }
     adresse.sin_family = AF_INET;
     adresse.sin_port = htons(9999);
     adresse.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -47,8 +49,6 @@ int main(int argc, char *argv[])
     killzombie.sa_handler = end_of_child;
     killzombie.sa_flags = SA_RESTART;
     sigaction(SIGCHLD, &killzombie, NULL);
-
-    
 
     // attach the listening socket to an address
     binded = bind(socketServer, (struct sockaddr *)&adresse, sizeof(adresse));
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
     }
     clientAddresseLen = sizeof(struct2);
 
-    //start of the server
+    // start of the server
     int n = 1;
     while (n == 1)
     {
@@ -90,11 +90,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-
-
-
-
-//function
+// function
 void createProcessClient(int socketClient, int socketServer)
 {
     switch (fork())
@@ -127,13 +123,12 @@ void handleClient(int socketClient)
         read(socketClient, &clientAnswer, sizeof(int));
         //================================
 
-
-        //lecture reference client int : 
-        int clientReference = 0;
-        read(socketClient, &clientReference, sizeof(int));
+        // lecture reference client int :
+        // int clientReference = 0;
+        // read(socketClient, &clientReference, sizeof(int));
         //================================
 
-        queryTreatment(clientAnswer, clientReference, socketClient);
+        queryTreatment(clientAnswer, socketClient);
 
         // lis la reponse du client
         read(socketClient, &endClient, sizeof(int));
@@ -147,7 +142,6 @@ void end_of_child()
 {
     wait(NULL);
 }
-
 
 int searchSize(char *str)
 {
@@ -169,78 +163,79 @@ void sendMessage(int socketClient, char *message)
     write(socketClient, *&message, size);
 }
 
-
-
-
-
-
 // traitement des requete en fonction de clientAnswer
-void queryTreatment(int clientAnswer, int clientReference, int socketClient)
+void queryTreatment(int clientAnswer, int socketClient)
 {
 
     switch (clientAnswer)
     {
     case 1:
-        //transform clientReference to string to search in the file
-        char clientReferenceString[4];
-        sprintf(clientReferenceString, "%d", clientReference);
-
-        char line[1024];
-        FILE *fp = fopen("bdd_bibliotheque.txt", "r");
-        // read the open file
-        while (fgets(line, sizeof(line), fp) != NULL)
-        {
-            if (strstr(line, clientReferenceString) != NULL)
-            {
-               
-                    char cRef[4], cAuthor[50], cTitle[50], cType[50], cNbPages[50], cRate[50];
-
-                    strcpy(cRef, strtok(line, "#"));
-                    strcpy(cAuthor, strtok(NULL, "#"));
-                    strcpy(cTitle, strtok(NULL, "#"));
-                    strcpy(cType, strtok(NULL, "#"));
-                    strcpy(cNbPages, strtok(NULL, "#"));
-                    strcpy(cRate, strtok(NULL, "#"));
-
-
-                    if (atoi(cRef) ==clientReference)
-                    {
-                       
-
-                        char res[560];
-                        strcat(res, cRef);
-                        char resAuthor[50] = "&";
-                        strcat(res, resAuthor);
-                        strcat(res, cAuthor);
-                        char resTitle[50] = "&";
-                        strcat(res, resTitle);
-                        strcat(res, cTitle);
-                        char resType[50] = "&";
-                        strcat(res, resType);
-                        strcat(res, cType);
-                        char resNbPages[50] = "&";
-                        strcat(res, resNbPages);
-                        strcat(res, cNbPages);
-                        char resRate[50] = "&";
-                        strcat(res, resRate);
-                        strcat(res, cRate);
-                       
-
-                        printf("%s \n", res);
-
-                        sendMessage(socketClient, res);
-                        break;
-                    }
-                    /*else
-                    {
-                        char *res = "Aucune référence pour votre livre n'est trouvé.";
-
-                        sendMessage(socketClient, res);
-                    }*/
-                
-            }
-        }
+        researchOne(socketClient);
         break;
     }
 }
 
+void researchOne(int socketClient)
+{
+    // lecture reference client int :
+    int clientReference = 0;
+    read(socketClient, &clientReference, sizeof(int));
+
+    // transform clientReference to string to search in the file
+    char clientReferenceString[4];
+    sprintf(clientReferenceString, "%d", clientReference);
+    printf("clientReferenceString: %s \n", clientReferenceString);
+    char line[1024];
+    FILE *fp = fopen("bdd_bibliotheque.txt", "r");
+    // read the open file
+    while (fgets(line, sizeof(line), fp) != NULL)
+    {
+        if (strstr(line, clientReferenceString) != NULL)
+        {
+
+            char cRef[4], cAuthor[50], cTitle[50], cType[50], cNbPages[50], cRate[50];
+
+            strcpy(cRef, strtok(line, "#"));
+            strcpy(cAuthor, strtok(NULL, "#"));
+            strcpy(cTitle, strtok(NULL, "#"));
+            strcpy(cType, strtok(NULL, "#"));
+            strcpy(cNbPages, strtok(NULL, "#"));
+            strcpy(cRate, strtok(NULL, "#"));
+
+            if (atoi(cRef) == clientReference)
+            {
+
+                char res[560];
+                strcat(res, cRef);
+                char resAuthor[50] = "&";
+                strcat(res, resAuthor);
+                strcat(res, cAuthor);
+                char resTitle[50] = "&";
+                strcat(res, resTitle);
+                strcat(res, cTitle);
+                char resType[50] = "&";
+                strcat(res, resType);
+                strcat(res, cType);
+                char resNbPages[50] = "&";
+                strcat(res, resNbPages);
+                strcat(res, cNbPages);
+                char resRate[50] = "&";
+                strcat(res, resRate);
+                strcat(res, cRate);
+
+                printf("%s \n", res);
+
+                sendMessage(socketClient, res);
+                memset(res, 0, strlen(res));
+
+                break;
+            }
+            /*else
+            {
+                char *res = "Aucune référence pour votre livre n'est trouvé.";
+
+                sendMessage(socketClient, res);
+            }*/
+        }
+    }
+}
