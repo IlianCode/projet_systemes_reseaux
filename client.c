@@ -64,34 +64,23 @@ int main(int argc, char *argv[])
     {
         // test reception menu
         displayClientMenu();
-        /* char messageRecu[282];
-         read(socketClient, &messageRecu, 282);
-         printf("%s", messageRecu);*/
-
-        // char *str = "Hello world";
-        // write(socketClient, &str, strlen(str));
+        
 
         // envoie de la reponse 1/2/3/4
         char checkTypeQuery;
         int typeQuery = 0;
-        // check if typequery is a number
+
+        // check if typequery is a number then send it to the server
         do
         {
-            printf("--Please enter a number between 1 and 4 \n");
+            printf("Entrez le numero de la requete souhaité (1/2/3/4):\n");
             scanf("%c", &checkTypeQuery);
         } while (checkTypeQuery != '1' && checkTypeQuery != '2' && checkTypeQuery != '3' && checkTypeQuery != '4');
 
         typeQuery = atoi(&checkTypeQuery);
         write(socketClient, &typeQuery, sizeof(int));
 
-        // reception de sendResponseToQuery
-        /*int size = 0;
-        read(socketClient, &size, sizeof(int));
-        printf("size = %d \n", size);
-
-        char msgAns[size];
-        read(socketClient, msgAns, size);
-        printf("%s \n", msgAns);*/
+       
         //=============================
 
         handleClientQuery(socketClient, typeQuery);
@@ -140,18 +129,17 @@ void handleClientQuery(int socketClient, int typeQuery)
     switch (typeQuery)
     {
     case 1:
-        printf("Vous avez selectionner la requete 1, veuillez entrer une reference. \nPar exemple: 10 \n");
-        // char *reference = (char *)malloc((4) * sizeof(char));
+        printf("\nVous avez selectionner la requete 1 !\n ");
+        
         // envoie de la reference envoyé par le client
         char *checkReference = (char *)malloc((10) * sizeof(char));
-
         int reference = 0;
         bool isNumber = false;
         // ask to input a int in checkreference and check if it's a number
         // do it until its a number
         while (isNumber == false)
         {
-            printf("\n--Please enter a number \n");
+            printf("Veuillez entrer une reference. Par exemple: 10 \n");
             scanf("%s", checkReference);
 
             for (int i = 0; i < strlen(checkReference); i++)
@@ -174,17 +162,14 @@ void handleClientQuery(int socketClient, int typeQuery)
 
     
 
-        // sendMessage(socketClient, reference);
 
         //================================================================================================
 
         // reception de queryTreatment
         int size = 0;
         read(socketClient, &size, sizeof(int));
-        printf("size = %d \n", size);
         char myBook[size];
         read(socketClient, &myBook, size);
-        printf("%s \n", myBook);
 
         traitementCaseOne(myBook);
         break;
@@ -202,22 +187,16 @@ bool askEnd(int socketClient)
 {
 
     bool res = true;
-    // reception du message questionnant si le client veut continuer
-    /* int size = 0;
-     read(socketClient, &size, sizeof(int));
-     printf("size = %d \n", size);
-     char endTreatment[size];
-     read(socketClient, &endTreatment, size);
-     printf("%s \n", endTreatment);*/
-    //================================================================================================
-
-    printf("Si vous n'avez plus de questions tapez 'non' sinon tapez 'oui'\n");
+    
+    printf("Voulez vous faire une nouvelle recherche?\n Tapez 'non' pour sortir, sinon tapez 'oui' pour faire une nouvelle recherche ! \n");
 
     char *answer;
     scanf("%s", answer);
     if (strcmp(answer, "non") == 0)
     {
         res = false;
+    }else{
+        res = true;
     }
     return res;
 }
@@ -233,18 +212,19 @@ void traitementCaseOne(char *myBook)
     strcpy(cNbPages, strtok(NULL, "&"));
     strcpy(cRate, strtok(NULL, "&"));
 
+    printf("\n-------- voici les informations sur le livre de reference %s --------\n", cRef);
     printf("Reference: %s \n", cRef);
     printf("Author: %s \n", cAuthor);
     printf("Title: %s \n", cTitle);
     printf("Type: %s \n", cType);
     printf("NbPages: %s \n", cNbPages);
-    printf("Rate: %s \n", cRate);
-
+    printf("Rate: %s ", cRate);
+    printf("-------------------------------------------------------------------\n");
     atoi(cRef);
 
     if (atoi(cNbPages) > 300)
     {
-        printf("\nLe nombre page du livre est superieur à 300 !!!! \n");
+        printf("\nLe nombre page du livre est superieur à 300 !!!! \n\n");
     }
     else
     {
@@ -254,5 +234,5 @@ void traitementCaseOne(char *myBook)
 
 void displayClientMenu()
 {
-    printf("Quel type de requete voulez vous faire ?\n1.  Recherche par reference \n2.  Recherche par mot clé \n3.  Recherche par auteur et par genre littéraire\n4.  Recherche par auteur et par critère: nombre de pages ou note des lecteurs\n Entrez le numero de la requete souhaité (1/2/3/4): \n");
+    printf("Quel type de requete voulez vous faire ?\n1.  Recherche par reference \n2.  Recherche par mot clé \n3.  Recherche par auteur et par genre littéraire\n4.  Recherche par auteur et par critère: nombre de pages ou note des lecteurs\n ");
 }

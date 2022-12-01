@@ -48,7 +48,6 @@ int main(int argc, char *argv[])
     killzombie.sa_flags = SA_RESTART;
     sigaction(SIGCHLD, &killzombie, NULL);
 
-    // check if socker server is running
     
 
     // attach the listening socket to an address
@@ -126,25 +125,13 @@ void handleClient(int socketClient)
         // receive the query type of the client
         int clientAnswer = 0;
         read(socketClient, &clientAnswer, sizeof(int));
-        //printf("Message received from client: %d \n", clientAnswer);
         //================================
 
-       // sendResponseToQuery(clientAnswer, socketClient);
 
         //lecture reference client int : 
         int clientReference = 0;
         read(socketClient, &clientReference, sizeof(int));
-        //lecture reference envoyé par le client
-       /* int size = 0;
-        read(socketClient, &size, sizeof(int));
-        printf("size = %d \n", size);
-
-        char clientReference[4];
-        read(socketClient, &clientReference, size);
-        printf("%s \n", clientReference);*/
-    //================================
-
-
+        //================================
 
         queryTreatment(clientAnswer, clientReference, socketClient);
 
@@ -160,42 +147,6 @@ void end_of_child()
 {
     wait(NULL);
 }
-/*
-void sendResponseToQuery(int clientAnswer, int socketClient)
-{
-    switch (clientAnswer)
-    {
-    case 1:
-        // le client choisis via reference de livre
-        char *servAns1 = (char *)malloc((90) * sizeof(char));
-        servAns1 = "Vous avez selectionner la requete 1, veuillez entrer une reference. \nPar exemple: 10 \n";
-        sendMessage(socketClient, servAns1);
-
-        break;
-
-    case 2:
-        //  servAns = "pas encore defini lol ";
-        // write(socketClient, &servAns, 1200);
-        // sendMessage(socketClient, servAns);
-        char *servAns2 = (char *)malloc((9) * sizeof(char));
-        servAns2 = "troisieme";
-        sendMessage(socketClient, servAns2);
-        break;
-
-    case 3:
-        //  servAns = "pas encore defini lol ";
-        //  write(socketClient, &servAns, 1200);
-        break;
-    case 4:
-        // servAns = "pas encore defini lol ";
-        // write(socketClient, &servAns, 1200);
-        break;
-    default:
-        break;
-    }
-}
-
-*/
 
 
 int searchSize(char *str)
@@ -212,10 +163,8 @@ void sendMessage(int socketClient, char *message)
 {
     int size = searchSize(message) * sizeof(char);
     printf("size of message: %d \n", size);
-    // printf("message: %s \n", message);
 
     write(socketClient, &size, sizeof(int));
-    // printf("%s \n", &message);
 
     write(socketClient, *&message, size);
 }
@@ -253,16 +202,10 @@ void queryTreatment(int clientAnswer, int clientReference, int socketClient)
                     strcpy(cNbPages, strtok(NULL, "#"));
                     strcpy(cRate, strtok(NULL, "#"));
 
-               //     printf("\n \n TATITAOU \n \n");
 
                     if (atoi(cRef) ==clientReference)
                     {
-                       /* printf("Reference: %s \n", cRef);
-                        printf("Author: %s \n", cAuthor);
-                        printf("Title: %s \n", cTitle);
-                        printf("Type: %s \n", cType);
-                        printf("NbPages: %s \n", cNbPages);
-                        printf("Rate: %s \n", cRate);*/
+                       
 
                         char res[560];
                         strcat(res, cRef);
@@ -285,10 +228,7 @@ void queryTreatment(int clientAnswer, int clientReference, int socketClient)
 
                         printf("%s \n", res);
 
-                        // char * res = 'La reférence de votre livre est: ' + cRef + ' \nL auteur est: ' + cAuthor + ' \nLe titre est: ' + cTitle + ' \nLe type est: ' + cType + ' \nLe nombre de pages est: ' + cNbPages + ' \nLa note est: ' + cRate + ' \n';
                         sendMessage(socketClient, res);
-                        //char *endOrNot = "Si vous n'avez plus de questions tapez 'oui' sinon tapez 'non'\n";
-                       // sendMessage(socketClient, endOrNot); 
                         break;
                     }
                     /*else
