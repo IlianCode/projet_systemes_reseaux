@@ -30,7 +30,6 @@ int main(int argc, char *argv[])
     struct sockaddr_in adresse, struct2;
     int binded;
     int clientAddresseLen;
-    char *buffer[1024];
     struct sigaction killzombie;
     // create a tcpip server socket
     // create a listening socket
@@ -74,7 +73,7 @@ int main(int argc, char *argv[])
     {
         printf("Socket listening successfully\n");
     }
-    clientAddresseLen = sizeof(struct2);
+    clientAddresseLen = sizeof(adresse);
 
     // start of the server
     int n = 1;
@@ -424,6 +423,8 @@ void researchTwo(int socketCLient)
         {
             strcpy(res, cSizeResearchTwo);
             strcat(res, "&");
+        }else{
+            strcat(res, "&");
         }
 
         strcat(res, tabLivre[i].reference);
@@ -431,9 +432,14 @@ void researchTwo(int socketCLient)
 
         if (strcmp(tabLivre[i].fullAuteur, tabLivre[i].auteur) != 0)
         {
-            strcat(res, tabLivre[i].fullAuteur);
-            strcat(res, " ");
-            strcat(res, tabLivre[i].auteur);
+            if(strcmp(tabLivre[i].fullAuteur, "Honore")==0 && strcmp(tabLivre[i].auteur, "Balzac")==0){
+                strcat(res, "Honore de Balzac");
+            }else{
+                strcat(res, tabLivre[i].fullAuteur);
+                strcat(res, " ");
+                strcat(res, tabLivre[i].auteur);
+            }
+            
         }
         else
         {
@@ -448,12 +454,11 @@ void researchTwo(int socketCLient)
         strcat(res, tabLivre[i].nbPages);
         strcat(res, "&");
         strcat(res, tabLivre[i].rate);
-        if (i != sizeResearchTwo - 1)
-        {
-            strcat(res, "&");
-        }
+        
     }
     printf("res : %s \n", res);
+    //send the result to the client
+    sendMessage(socketCLient, res);
     // strtok les nom des auteurs par ' ' et recuperer le dernier mot de tabLivres[i].auteur
 }
 

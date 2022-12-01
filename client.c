@@ -16,6 +16,7 @@ void displayClientMenu();
 void handleClientQuery(int socketClient, int typeQuery);
 bool askEnd(int socketClient);
 void traitementCaseOne(char *myBook);
+void traitementCaseTwo(char *myBookKey);
 void traitementCaseThree(char *myBooks);
 
 int main(int argc, char *argv[])
@@ -176,16 +177,16 @@ void handleClientQuery(int socketClient, int typeQuery)
     {
         printf("\nVous avez selectionner la requete 2 !\n ");
         printf("Veuillez le nombre de mots clés que vous souhaitez (max 3).\n Tapez '1', '2' ou '3' ! \n");
-        
+
         char checkNbKeyWord[2];
         int nbKeyWord = 0;
 
         // check if typequery is a number then send it to the server
-        //do
+        // do
         //{
-            printf("Entrez le nombre de mots clés souhaité (1/2/3): \n");
-            scanf(" %s", checkNbKeyWord);
-       // } while (checkNbKeyWord != '1' && checkNbKeyWord != '2' && checkNbKeyWord != '3');
+        printf("Entrez le nombre de mots clés souhaité (1/2/3): \n");
+        scanf(" %s", checkNbKeyWord);
+        // } while (checkNbKeyWord != '1' && checkNbKeyWord != '2' && checkNbKeyWord != '3');
 
         nbKeyWord = atoi(checkNbKeyWord);
         char sendKeyWord[60];
@@ -236,7 +237,15 @@ void handleClientQuery(int socketClient, int typeQuery)
         sendMessage(socketClient, sendKeyWord);
         printf("bien envoyé\n");
 
-        
+        // recevoir le tableau de char
+        int sizeBookKey = 0;
+        read(socketClient, &sizeBookKey, sizeof(int));
+        char myBookKey[sizeBookKey];
+        read(socketClient, &myBookKey, sizeBookKey);
+
+        printf("myBookKey : %s\n", myBookKey);
+
+        traitementCaseTwo(myBookKey);
     }
     else if (typeQuery == 3)
     {
@@ -331,6 +340,40 @@ void traitementCaseOne(char *myBook)
 void displayClientMenu()
 {
     printf("Quel type de requete voulez vous faire ?\n1.  Recherche par reference \n2.  Recherche par mot clé \n3.  Recherche par auteur et par genre littéraire\n4.  Recherche par auteur et par critère: nombre de pages ou note des lecteurs\n ");
+}
+
+void traitementCaseTwo(char *myBookKey)
+{
+    char cNumber[4];
+    strcpy(cNumber, strtok(myBookKey, "&"));
+
+    printf("\n-------- Voici le(s) livre(s) trouvé en fonction de vos critères de recherche  --------\n");
+
+    for (int i = 0; i < atoi(cNumber); i++)
+    {
+        char cRef[4], cAuthor[50], cTitle[50], cType[50], cNbPages[50], cRate[4];
+        
+        strcpy(cRef, strtok(NULL, "&"));
+        strcpy(cAuthor, strtok(NULL, "&"));
+        strcpy(cTitle, strtok(NULL, "&"));
+        strcpy(cType, strtok(NULL, "&"));
+        strcpy(cNbPages, strtok(NULL, "&"));
+        strcpy(cRate, strtok(NULL, "&"));
+
+
+        printf("-------------------------\n");
+        printf("Livre %d : ", i + 1);
+
+        printf("Reference: %s \n", cRef);
+        printf("Auteur: %s \n", cAuthor);
+        printf("Title: %s \n", cTitle);
+        printf("Genre: %s \n", cType);
+        printf("NbPages: %s \n", cNbPages);
+        printf("Note: %s ", cRate);
+        printf("-------------------------\n");
+    }
+
+    printf("-------------------------------------------------------------------\n");
 }
 
 void traitementCaseThree(char *myBooks)
