@@ -10,6 +10,8 @@
 #include <string.h>
 #include <netdb.h>
 
+#include <ctype.h>
+
 void displayClientMenu();
 void handleClientQuery(int socketClient, int typeQuery);
 bool askEnd(int socketClient);
@@ -20,7 +22,7 @@ int main(int argc, char *argv[])
     // create the client part of the tcpi ip server
     struct sockaddr_in addrClient;
     int socketClient;
-    const char *namehost = "F203-24";
+    const char *namehost = "localhost";
     // def the structure of the server
     struct hostent *infos_server = NULL;
 
@@ -62,26 +64,27 @@ int main(int argc, char *argv[])
     {
         // test reception menu
         displayClientMenu();
-       /* char messageRecu[282];
-        read(socketClient, &messageRecu, 282);
-        printf("%s", messageRecu);*/
+        /* char messageRecu[282];
+         read(socketClient, &messageRecu, 282);
+         printf("%s", messageRecu);*/
 
         // char *str = "Hello world";
         // write(socketClient, &str, strlen(str));
 
-        //envoie de la reponse 1/2/3/4
+        // envoie de la reponse 1/2/3/4
+        char checkTypeQuery;
         int typeQuery = 0;
-        scanf("%d", &typeQuery);
+        // check if typequery is a number
+        do
+        {
+            printf("--Please enter a number between 1 and 4 \n");
+            scanf("%c", &checkTypeQuery);
+        } while (checkTypeQuery != '1' && checkTypeQuery != '2' && checkTypeQuery != '3' && checkTypeQuery != '4');
+
+        typeQuery = atoi(&checkTypeQuery);
         write(socketClient, &typeQuery, sizeof(int));
 
-
-
-
-
-
-
         // reception de sendResponseToQuery
-        printf("Vous avez selectionner la requete 1, veuillez entrer une reference. \nPar exemple: 10 \n");
         /*int size = 0;
         read(socketClient, &size, sizeof(int));
         printf("size = %d \n", size);
@@ -91,17 +94,7 @@ int main(int argc, char *argv[])
         printf("%s \n", msgAns);*/
         //=============================
 
-
-
-
-
-
         handleClientQuery(socketClient, typeQuery);
-
-
-
-
-
 
         isRunning = askEnd(socketClient);
 
@@ -147,14 +140,14 @@ void handleClientQuery(int socketClient, int typeQuery)
     switch (typeQuery)
     {
     case 1:
-//envoie de la reference envoyé par le client
+        printf("Vous avez selectionner la requete 1, veuillez entrer une reference. \nPar exemple: 10 \n");
+
+        // envoie de la reference envoyé par le client
         char *reference = (char *)malloc((4) * sizeof(char));
         scanf("%s", reference);
         sendMessage(socketClient, reference);
-//================================================================================================
-       
-       
-       
+        //================================================================================================
+
         // reception de queryTreatment
         int size = 0;
         read(socketClient, &size, sizeof(int));
@@ -180,16 +173,16 @@ bool askEnd(int socketClient)
 
     bool res = true;
     // reception du message questionnant si le client veut continuer
-   /* int size = 0;
-    read(socketClient, &size, sizeof(int));
-    printf("size = %d \n", size);
-    char endTreatment[size];
-    read(socketClient, &endTreatment, size);
-    printf("%s \n", endTreatment);*/
-//================================================================================================
-    
+    /* int size = 0;
+     read(socketClient, &size, sizeof(int));
+     printf("size = %d \n", size);
+     char endTreatment[size];
+     read(socketClient, &endTreatment, size);
+     printf("%s \n", endTreatment);*/
+    //================================================================================================
+
     printf("Si vous n'avez plus de questions tapez 'non' sinon tapez 'oui'\n");
-    
+
     char *answer;
     scanf("%s", answer);
     if (strcmp(answer, "non") == 0)
@@ -217,9 +210,11 @@ void traitementCaseOne(char *myBook)
     printf("NbPages: %s \n", cNbPages);
     printf("Rate: %s \n", cRate);
 
+    atoi(cRef);
+
     if (atoi(cNbPages) > 300)
     {
-       printf("\nLe nombre page du livre est superieur à 300 !!!! \n");
+        printf("\nLe nombre page du livre est superieur à 300 !!!! \n");
     }
     else
     {
