@@ -16,7 +16,7 @@ void sendResponseToQuery(int clientAnswer, int socketClient);
 
 int searchSize(char *str);
 void sendMessage(int socketClient, char *message);
-void queryTreatment(int clientAnswer, char *clientReference, int socketClient);
+void queryTreatment(int clientAnswer, int clientReference, int socketClient);
 
 
 int main(int argc, char *argv[])
@@ -131,14 +131,17 @@ void handleClient(int socketClient)
 
        // sendResponseToQuery(clientAnswer, socketClient);
 
+        //lecture reference client int : 
+        int clientReference = 0;
+        read(socketClient, &clientReference, sizeof(int));
         //lecture reference envoyé par le client
-        int size = 0;
+       /* int size = 0;
         read(socketClient, &size, sizeof(int));
         printf("size = %d \n", size);
 
         char clientReference[4];
         read(socketClient, &clientReference, size);
-        printf("%s \n", clientReference);
+        printf("%s \n", clientReference);*/
     //================================
 
 
@@ -223,18 +226,22 @@ void sendMessage(int socketClient, char *message)
 
 
 // traitement des requete en fonction de clientAnswer
-void queryTreatment(int clientAnswer, char *clientReference, int socketClient)
+void queryTreatment(int clientAnswer, int clientReference, int socketClient)
 {
 
     switch (clientAnswer)
     {
     case 1:
+        //transform clientReference to string to search in the file
+        char clientReferenceString[4];
+        sprintf(clientReferenceString, "%d", clientReference);
+
         char line[1024];
         FILE *fp = fopen("bdd_bibliotheque.txt", "r");
         // read the open file
         while (fgets(line, sizeof(line), fp) != NULL)
         {
-            if (strstr(line, clientReference) != NULL)
+            if (strstr(line, clientReferenceString) != NULL)
             {
                
                     char cRef[4], cAuthor[50], cTitle[50], cType[50], cNbPages[50], cRate[50];
@@ -248,7 +255,7 @@ void queryTreatment(int clientAnswer, char *clientReference, int socketClient)
 
                //     printf("\n \n TATITAOU \n \n");
 
-                    if (strcmp(cRef, clientReference) == 0)
+                    if (atoi(cRef) ==clientReference)
                     {
                        /* printf("Reference: %s \n", cRef);
                         printf("Author: %s \n", cAuthor);

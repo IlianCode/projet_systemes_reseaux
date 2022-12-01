@@ -141,11 +141,41 @@ void handleClientQuery(int socketClient, int typeQuery)
     {
     case 1:
         printf("Vous avez selectionner la requete 1, veuillez entrer une reference. \nPar exemple: 10 \n");
-
+        // char *reference = (char *)malloc((4) * sizeof(char));
         // envoie de la reference envoyé par le client
-        char *reference = (char *)malloc((4) * sizeof(char));
-        scanf("%s", reference);
-        sendMessage(socketClient, reference);
+        char *checkReference = (char *)malloc((10) * sizeof(char));
+
+        int reference = 0;
+        bool isNumber = false;
+        // ask to input a int in checkreference and check if it's a number
+        // do it until its a number
+        while (isNumber == false)
+        {
+            printf("\n--Please enter a number \n");
+            scanf("%s", checkReference);
+
+            for (int i = 0; i < strlen(checkReference); i++)
+            {
+                if (isdigit(checkReference[i]))
+                {
+                    isNumber = true;
+                }
+                else
+                {
+                    isNumber = false;
+                    printf("\npas un nombre\n");
+                    break;
+                }
+            }
+        }
+
+        reference = atoi(checkReference);
+        write(socketClient, &reference, sizeof(int));
+
+    
+
+        // sendMessage(socketClient, reference);
+
         //================================================================================================
 
         // reception de queryTreatment
