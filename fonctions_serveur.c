@@ -44,13 +44,8 @@ void handleClient(int socketClient)
         // receive the query type of the client
         int clientAnswer = 0;
         read(socketClient, &clientAnswer, sizeof(int));
-        //================================
-
-        // lecture reference client int :
-        // int clientReference = 0;
-        // read(socketClient, &clientReference, sizeof(int));
-        //================================
-
+        
+        
         queryTreatment(clientAnswer, socketClient);
 
         // lis la reponse du client
@@ -230,7 +225,6 @@ void researchTwo(int socketCLient)
         break;
     }
 
-    //================================================================================================
     // debut trie etc
     // mot clé recherché
 
@@ -357,7 +351,6 @@ void researchTwo(int socketCLient)
     }
     // send the result to the client
     sendMessage(socketCLient, res);
-    // strtok les nom des auteurs par ' ' et recuperer le dernier mot de tabLivres[i].auteur
 }
 
 // recherche par auteur puis par genre , numero 3 dans l'enoncé
@@ -557,7 +550,6 @@ void researchFour(int socketClient)
         }
     }
 
-    // affichage du tableau trié
    
     char resSearchFour[1024];
     // transform sizeFour to string

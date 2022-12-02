@@ -94,17 +94,8 @@ void handleClientQuery(int socketClient, int typeQuery)
             printf("Entrez le nombre de mots clés souhaité (1/2/3): \n");
             scanf("%c", checkNbKeyWord);
         } while (atoi(checkNbKeyWord) != 1 && atoi(checkNbKeyWord) != 2 && atoi(checkNbKeyWord) != 3);
-        //================================================================================================
-        /* char checkTypeQuery;
-         int typeQuery = 0;
-
-         do
-         {
-             printf("Entrez le numero de la requete souhaité (1/2/3/4):\n");
-             scanf("%c", &checkTypeQuery);
-         } while (checkTypeQuery != '1' && checkTypeQuery != '2' && checkTypeQuery != '3' && checkTypeQuery != '4');*/
-        // =================================================================================================
-
+      
+      
         nbKeyWord = atoi(checkNbKeyWord);
         char sendKeyWord[60];
         strcpy(sendKeyWord, checkNbKeyWord);
@@ -301,7 +292,6 @@ void handleClientQuery(int socketClient, int typeQuery)
 
         isNumber = true;
         char genre[50];
-        // scanf("%s", genre);
 
         while (isNumber == true)
         {
@@ -339,7 +329,6 @@ void handleClientQuery(int socketClient, int typeQuery)
         char myBooks[sizeBooks];
         read(socketClient, &myBooks, sizeBooks);
 
-        // traitementCaseOne(myBooks);
 
         traitementCaseThree(myBooks);
 
@@ -397,7 +386,6 @@ void handleClientQuery(int socketClient, int typeQuery)
         char myBooksFour[sizeBooksFour];
         read(socketClient, &myBooksFour, sizeBooksFour);
 
-        // traitementCaseFour(myBooksFour);
 
         traitementCaseFour(myBooksFour);
     }
