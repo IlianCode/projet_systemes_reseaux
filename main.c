@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     int socketServer, socketClient;
     struct sockaddr_in adresse, struct2;
     int binded;
-    int clientAddresseLen;
+        unsigned int  clientAddresseLen;
     struct sigaction killzombie;
     int port = atoi(argv[1]);
     // create a tcpip server socket
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     {
         printf("Socket listening successfully\n");
     }
-    clientAddresseLen = sizeof(adresse);
+    clientAddresseLen = sizeof(struct2);
 
     // start of the server
     int n = 1;
