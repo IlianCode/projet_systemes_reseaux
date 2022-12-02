@@ -1,28 +1,34 @@
-all:main client
+all: ./bin/main ./bin/client
+
+./bin/main: ./bin/main.o ./bin/fonctions_serveur.o
+	gcc -o ./bin/main.o ./bin/fonctions_serveur.o -o ./bin/main -w
+
+./bin/main.o: ./sources/main.c ./headers/fonctions_serveur.h
+	gcc -c -Wall ./sources/main.c -o ./bin/main.o 
+
+./bin/fonctions_serveur.o: ./sources/fonctions_serveur.c ./headers/fonctions_serveur.h
+	gcc -c -Wall ./sources/fonctions_serveur.c -w -o ./bin/fonctions_serveur.o 
+
+./bin/main: ./bin/main.o ./bin/fonctions_serveur.o
+	gcc -o ./bin/main ./bin/main.o ./bin/fonctions_serveur.o 
 
 
-fonctions_serveur.o: fonctions_serveur.c fonctions_serveur.h
-	gcc -c fonctions_serveur.c fonctions_serveur.h -Wall
 
-main.o: main.c fonctions_serveur.c
-	gcc -c main.c fonctions_serveur.c -Wall 
-
-main: main.o fonctions_serveur.o
-	gcc -o main main.o fonctions_serveur.o -Wall
-
-fonctions_client.o: fonctions_client.c fonctions_client.h
-	gcc -c fonctions_client.c fonctions_client.h -Wall
-
-client.o: client.c fonctions_client.c
-	gcc -c client.c fonctions_client.c -Wall 
-
-client: client.o fonctions_client.o
-	gcc -o client client.o fonctions_client.o -Wall
+## make pour le client
+#
+./bin/client: ./bin/client.o ./bin/fonctions_client.o
+	gcc -o ./bin/client.o ./bin/fonctions_client.o -o ./bin/client -w
 
 
-clean:
-	rm -f *.o
+./bin/client.o: ./sources/client.c ./headers/fonctions_client.h
+	gcc -c -Wall ./sources/client.c -o ./bin/client.o 
 
+./bin/fonctions_client.o: ./sources/fonctions_client.c ./headers/fonctions_client.h
+	gcc -c -Wall ./sources/fonctions_client.c -w -o ./bin/fonctions_client.o
+
+
+./bin/client: ./bin/client.o ./bin/fonctions_client.o
+	gcc -o ./bin/client ./bin/client.o ./bin/fonctions_client.o
 
 
 
