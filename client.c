@@ -20,10 +20,10 @@ int main(int argc, char *argv[])
     // create the client part of the tcpi ip server
     struct sockaddr_in addrClient;
     int socketClient;
-    const char *namehost = "localhost";
+    const char *namehost = argv[2];
     // def the structure of the server
     struct hostent *infos_server = NULL;
-
+    int port = atoi(argv[1]);
     socketClient = socket(AF_INET, SOCK_STREAM, 0);
     if (socketClient == -1)
     {
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     // give value to the addrClient
     addrClient.sin_family = AF_INET;
     memcpy(&addrClient.sin_addr.s_addr, infos_server->h_addr, sizeof(u_long));
-    addrClient.sin_port = htons(9999);
+    addrClient.sin_port = htons(port);
 
     // connect to the server
     if (connect(socketClient, (struct sockaddr *)&addrClient, sizeof(addrClient)) == -1)

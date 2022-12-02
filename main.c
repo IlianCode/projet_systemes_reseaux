@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
     int binded;
     int clientAddresseLen;
     struct sigaction killzombie;
+    int port = atoi(argv[1]);
     // create a tcpip server socket
     // create a listening socket
     socketServer = socket(AF_INET, SOCK_STREAM, 0);
@@ -32,7 +33,7 @@ int main(int argc, char *argv[])
         printf("Socket created successfully \n");
     }
     adresse.sin_family = AF_INET;
-    adresse.sin_port = htons(9999);
+    adresse.sin_port = htons(port);
     adresse.sin_addr.s_addr = htonl(INADDR_ANY);
 
     // prevent from zombies process
