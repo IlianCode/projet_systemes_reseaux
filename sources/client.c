@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
     // def the structure of the server
     struct hostent *infos_server = NULL;
     int port = atoi(argv[1]);
+
     socketClient = socket(AF_INET, SOCK_STREAM, 0);
     if (socketClient == -1)
     {
@@ -32,7 +33,6 @@ int main(int argc, char *argv[])
     }
 
     infos_server = gethostbyname(namehost);
-    // check if infos_server is still null
     if (infos_server == NULL)
     {
         printf("Error getting host by name");
@@ -60,10 +60,9 @@ int main(int argc, char *argv[])
     // debut reception données et envoie de reponse
     while (isRunning)
     {
-        // test reception menu
+        // affiche le menu utilisateur
         displayClientMenu();
 
-        // envoie de la reponse 1/2/3/4
         char checkTypeQuery;
         int typeQuery = 0;
 
@@ -77,10 +76,10 @@ int main(int argc, char *argv[])
         typeQuery = atoi(&checkTypeQuery);
         write(socketClient, &typeQuery, sizeof(int));
 
-        //=============================
-
+         
         handleClientQuery(socketClient, typeQuery);
-
+    
+     //demande a l'utilisateur si il veut continuer ou non
         isRunning = askEnd(socketClient);
 
         // envoie 0 au serveur si isRunning = true sinon envoie 1 au serveur

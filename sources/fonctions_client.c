@@ -24,7 +24,7 @@ int searchSize(char *str)
     }
     return i + 1;
 }
-
+//fonction utilisé pour envpoyer des char et recuperer la taille correcte
 void sendMessage(int socketClient, char *message)
 {
     int size = searchSize(message) * sizeof(char);
@@ -32,6 +32,7 @@ void sendMessage(int socketClient, char *message)
     write(socketClient, *&message, size);
 }
 
+//selon le type de recherche souhaité, execute le code et fonctions associés
 void handleClientQuery(int socketClient, int typeQuery)
 {
     if (typeQuery == 1)
@@ -39,7 +40,6 @@ void handleClientQuery(int socketClient, int typeQuery)
 
         printf("\nVous avez selectionner la requete 1 !\n ");
 
-        // envoie de la reference envoyé par le client
         char *checkReference = (char *)malloc((10) * sizeof(char));
         int reference = 0;
         bool isNumber = false;
@@ -48,7 +48,6 @@ void handleClientQuery(int socketClient, int typeQuery)
         while (isNumber == false)
         {
             printf("Veuillez entrer une reference. Par exemple: 10 \n");
-
             scanf("%s", checkReference);
 
             for (int i = 0; i < strlen(checkReference); i++)
@@ -64,18 +63,19 @@ void handleClientQuery(int socketClient, int typeQuery)
                 }
             }
         }
+        //envoie de la reference au serveur
         reference = atoi(checkReference);
         write(socketClient, &reference, sizeof(int));
 
 
 
-        // reception de queryTreatment
+        // reception du traitement de la recherche serveur
         int size = 0;
         read(socketClient, &size, sizeof(int));
         char myBook[size];
         read(socketClient, &myBook, size);
 
-
+        //traitement de la reponse serveur et affichage en consequences
         traitementCaseOne(myBook);
 
     }
@@ -93,7 +93,7 @@ void handleClientQuery(int socketClient, int typeQuery)
             scanf("%c", checkNbKeyWord);
         } while (atoi(checkNbKeyWord) != 1 && atoi(checkNbKeyWord) != 2 && atoi(checkNbKeyWord) != 3);
       
-      
+      //prepare la chaine de char a envoyer au serveur
         nbKeyWord = atoi(checkNbKeyWord);
         char sendKeyWord[60];
         strcpy(sendKeyWord, checkNbKeyWord);
@@ -104,9 +104,11 @@ void handleClientQuery(int socketClient, int typeQuery)
         char keyWord3[20];
 
         bool isNumber = true;
+
+        //selon le nombre de mot clé, demande a l'utilisateur de rentrer les mots clés
+        //effectue les verifications avant de les envoyer au serveur 
         switch (nbKeyWord)
         {
-
         case 1:
             while (isNumber == true)
             {
@@ -252,22 +254,26 @@ void handleClientQuery(int socketClient, int typeQuery)
         }
         sendMessage(socketClient, sendKeyWord);
 
-        // recevoir le tableau de char
+        // reception de la recherche serveur
         int sizeBookKey = 0;
         read(socketClient, &sizeBookKey, sizeof(int));
         char myBookKey[sizeBookKey];
         read(socketClient, &myBookKey, sizeBookKey);
 
-
+        //traitement de la reponse serveur et affichage en consequences
         traitementCaseTwo(myBookKey);
+
+
+
     }
     else if (typeQuery == 3)
     {
+
         printf("\nVous avez selectionner la requete 3 !\n ");
         char author[50];
         bool isNumber = true;
-        // ask to input a int in checkreference and check if it's a number
-        // do it until its a number
+        
+        //saisis du nom d'auteur et verification de la saisie 
         while (isNumber == true)
         {
             printf("Veuillez entrer le nom de l'auteur. Par exemple: Victor Hugo \n");
@@ -290,7 +296,7 @@ void handleClientQuery(int socketClient, int typeQuery)
 
         isNumber = true;
         char genre[50];
-
+        //saisis du genre et verification de la saisie
         while (isNumber == true)
         {
             printf("Veuillez entrer le genre recherché. Par exemple: roman \n");
@@ -311,7 +317,7 @@ void handleClientQuery(int socketClient, int typeQuery)
             }
         }
 
-        // make a string with author and genre separated by a '&'
+        //preparation de la chaine de char a envoyer au serveur 
         char *authorAndGenre = (char *)malloc((100) * sizeof(char));
         strcpy(authorAndGenre, author);
         strcat(authorAndGenre, "&");
@@ -320,14 +326,13 @@ void handleClientQuery(int socketClient, int typeQuery)
         // send authorAndGenre to the server
         sendMessage(socketClient, authorAndGenre);
 
-        // reception of the queryTreatment
-        //  reception de queryTreatment
+        //reception de la recherche serveur
         int sizeBooks = 0;
         read(socketClient, &sizeBooks, sizeof(int));
         char myBooks[sizeBooks];
         read(socketClient, &myBooks, sizeBooks);
 
-
+        //traitement de la reponse serveur et affichage en consequences
         traitementCaseThree(myBooks);
 
         
@@ -338,6 +343,8 @@ void handleClientQuery(int socketClient, int typeQuery)
         printf("\nVous avez selectionner la requete 4 !\n ");
         char author[50];
         bool isNumber = true;
+
+        //saisis du nom d'auteur et verification de la saisie
         while (isNumber == true)
         {
             printf("Veuillez entrer le nom de l'auteur. Par exemple: Victor Hugo \n");
@@ -360,17 +367,16 @@ void handleClientQuery(int socketClient, int typeQuery)
 
         printf("Voulez vous trier les livres:\n\n -par nombre de pages? (croissant)\n -par note des lecteurs?\n");
 
-        // transform choice into a string
 
         char choiceString[2];
-        // check if typequery is a number then send it to the server
+        //saisis du choix de tri et verification de la saisie
         do
         {
             printf("Tapez 1 pour le nombre de pages, 2 pour la note des lecteurs\n");
             scanf("%c", choiceString);
         } while (atoi(choiceString) != 1 && atoi(choiceString) != 2);
 
-        // preparer la variable d'envoie
+        // preparer la variable d'envoie 
         char *myQuery = malloc(sizeof(char) * 54);
         strcpy(myQuery, author);
         strcat(myQuery, "&");
@@ -378,17 +384,19 @@ void handleClientQuery(int socketClient, int typeQuery)
         // envoie
         sendMessage(socketClient, myQuery);
 
-        // reception des livres en reponses
+        // reception de la recherche serveur
         int sizeBooksFour = 0;
         read(socketClient, &sizeBooksFour, sizeof(int));
         char myBooksFour[sizeBooksFour];
         read(socketClient, &myBooksFour, sizeBooksFour);
+        printf("%s\n", myBooksFour);
 
-
+        //traitement de la reponse serveur et affichage en consequences
         traitementCaseFour(myBooksFour);
     }
 }
 
+//fonction demandant a l'utilisateur s'il sougaite ou non continuer a utiliser le programme
 bool askEnd(int socketClient)
 {
 
@@ -409,6 +417,7 @@ bool askEnd(int socketClient)
     return res;
 }
 
+//fonction permettant de traiter la reponse du serveur pour la requete 1
 void traitementCaseOne(char *myBook)
 {
 
@@ -450,11 +459,13 @@ void traitementCaseOne(char *myBook)
     }
 }
 
+//fonction affichant le menu a l'utilisateur
 void displayClientMenu()
 {
     printf("Quel type de requete voulez vous faire ?\n1.  Recherche par reference \n2.  Recherche par mot clé \n3.  Recherche par auteur et par genre littéraire\n4.  Recherche par auteur et par critère: nombre de pages ou note des lecteurs\n ");
 }
 
+//fonction permettant de traiter la reponse du serveur pour la requete 2
 void traitementCaseTwo(char *myBookKey)
 {
     char cNumber[4];
@@ -496,6 +507,7 @@ void traitementCaseTwo(char *myBookKey)
     }
 }
 
+//fonction permettant de traiter la reponse du serveur pour la requete 3
 void traitementCaseThree(char *myBooks)
 {
     char cNumber[10];
@@ -527,6 +539,7 @@ void traitementCaseThree(char *myBooks)
     }
 }
 
+//fonction permettant de traiter la reponse du serveur pour la requete 4
 void traitementCaseFour(char *myBooks)
 {
     char cNumber[4];

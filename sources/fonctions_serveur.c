@@ -9,11 +9,12 @@
 #include <sys/wait.h>
 #include <string.h>
 #include <ctype.h>
-
+//fonction appeler dans le handler pour gerer les processus zombies
 void end_of_child(){
     wait(NULL);
 }
 
+//fonction créant un fork pour gérer les clients a chaque connection
 void createProcessClient(int socketClient, int socketServer)
 {
     switch (fork())
@@ -32,7 +33,7 @@ void createProcessClient(int socketClient, int socketServer)
     }
 }
 
-// function to listen to the client query
+//fonction gérant les clients
 void handleClient(int socketClient)
 {
     int endClient = 0;
@@ -45,7 +46,7 @@ void handleClient(int socketClient)
         int clientAnswer = 0;
         read(socketClient, &clientAnswer, sizeof(int));
         
-        
+        //selon le type de requete on appelle la fonction correspondante dans queryTreatment
         queryTreatment(clientAnswer, socketClient);
 
         // lis la reponse du client
@@ -111,13 +112,12 @@ void researchOne(int socketClient)
     sprintf(clientReferenceString, "%d", clientReference);
     char line[1024];
     FILE *fp = fopen("../sources/bdd_bibliotheque.txt", "r");
-    // read the open file
     int count = 0;
-    //create a string of count
     char countString[4];
 
     while (fgets(line, sizeof(line), fp) != NULL)
     {
+        //si clientReferenceString est dans la ligne on envoie la ligne au client 
         if (strstr(line, clientReferenceString) != NULL)
         {
 
@@ -166,6 +166,7 @@ void researchOne(int socketClient)
         }
     }
     char ifNoRes[4];
+    //sinon envoie un message d'erreur au client
     if(count == 0){
         strcpy(ifNoRes, "0&");
         sendMessage(socketClient, ifNoRes);
@@ -185,8 +186,8 @@ void researchTwo(int socketCLient)
         char rate[50];
         char fullAuteur[50];
     };
-    // reception du ou des mots clés
 
+    // reception du ou des mots clés
     int size = 0;
     read(socketCLient, &size, sizeof(int));
     char *clientKeywords = malloc(size);
@@ -195,11 +196,13 @@ void researchTwo(int socketCLient)
     char cNbKeyWord[4], cKeyWord1[20], cKeyWord2[20], cKeyWord3[20];
 
     strcpy(cNbKeyWord, strtok(clientKeywords, "&"));
-
+    //les mots clés sont initilisé avec un charactere non présent dans le fichier 
+    //afin de ne pas avoir de problème si le client ne rentre pas 3 mots clés
     char *clavier = "}";
     char *clavier2 = "}";
     char *clavier3 = "}";
 
+    //selon le nombre de mots clés souhaité, les variables clavier prennent la valeur des mots clé saisis par le client
     switch (atoi(cNbKeyWord))
     {
     case 1:
@@ -225,15 +228,12 @@ void researchTwo(int socketCLient)
         break;
     }
 
-    // debut trie etc
-    // mot clé recherché
-
-    
+//debut de trie
     char line[1024];
     FILE *fp = fopen("bdd_bibliotheque.txt", "r");
-
     int compteur = 0;
     int sizeResearchTwo = 0;
+    //regarde le nombre d'occurrences dans le fichier pour les mots clés saisis par le client
     while (fgets(line, sizeof(line), fp) != NULL)
     {
         if ((strstr(line, clavier) != NULL) || (strstr(line, clavier2) != NULL) || (strstr(line, clavier3) != NULL))
@@ -252,6 +252,7 @@ void researchTwo(int socketCLient)
     struct livre tabLivre[sizeResearchTwo];
     // read the open file
 
+//remplissage de la liste de struct livre
     while (fgets(line, sizeof(line), fp) != NULL)
     {
         if ((strstr(line, clavier) != NULL) || (strstr(line, clavier2) != NULL) || (strstr(line, clavier3) != NULL))
@@ -294,16 +295,16 @@ void researchTwo(int socketCLient)
             }
         }
     }
-    // affichage resultat
-    char res[2048]; // resultat
+
+    char res[2048]; 
     // create a variable to store the sizeResearchTwo in string
     char cSizeResearchTwo[10];
     // convert sizeResearchTwo to string
     sprintf(cSizeResearchTwo, "%d", sizeResearchTwo);
     
+    //ecriture du message qui sera renvoyé au client
     for (int i = 0; i < sizeResearchTwo; i++)
-    {
-      
+    { 
         if (i == 0)
         {
             strcpy(res, cSizeResearchTwo);
@@ -345,6 +346,7 @@ void researchTwo(int socketCLient)
         strcat(res, tabLivre[i].rate);
     }
 
+// si pas de livre trouvé on envoie un message d'erreur au client
     if (sizeResearchTwo == 0)
     {
         strcpy(res, "0&");
@@ -410,13 +412,14 @@ void researchThree(int socketClient)
     }
    
     char newCount[4];
+    //si pas de livre trouvé on envoie un message d'erreur au client
     if (count == 0)
     {
         strcpy(resTitle, "0&");
         sendMessage(socketClient, resTitle);
        
     }
-    else
+    else //sinon ajout du nombre d'occurrence devant le message
     {
 
         sprintf(newCount, "%d", count);
@@ -425,6 +428,7 @@ void researchThree(int socketClient)
     }
 }
 
+//recherche par auteur puis trie par nb page ou note 
 void researchFour(int socketClient)
 {
     // reception autheur et choix du client
@@ -460,6 +464,7 @@ void researchFour(int socketClient)
     int choixTrie = atoi(choice);
     int compteur = 0;
     int sizeFour = 0;
+    //calcul du nombre d'occurrences
     while (fgets(line, sizeof(line), fp) != NULL)
     {
         if (strstr(line, clavier) != NULL)
@@ -511,10 +516,9 @@ void researchFour(int socketClient)
    
 
 
-
+    //si choix trie par nb page
     if (choixTrie == 1)
     {
-
         // sort tabLivre by nbPages (bubble sort)
         for (int i = 0; i < sizeFour; i++)
         {
@@ -529,7 +533,7 @@ void researchFour(int socketClient)
             }
         }
     }
-
+    //sinon si choix par note 
     else if (choixTrie == 2)
     {
 
@@ -550,7 +554,7 @@ void researchFour(int socketClient)
         }
     }
 
-   
+   //ecriture du message à envoyer au client
     char resSearchFour[1024];
     // transform sizeFour to string
     char sizeFourString[4];
@@ -576,7 +580,7 @@ void researchFour(int socketClient)
         strcat(resSearchFour, tabLivre[i].nbPages);
         strcat(resSearchFour, "&");
         strcat(resSearchFour, tabLivre[i].rate);
-    }
+    }//si pas de livre trouvé envoie d'un message d'erreur au client
     if (sizeFour == 0)
     {
         strcpy(resSearchFour, "&0");
@@ -587,6 +591,7 @@ void researchFour(int socketClient)
     sendMessage(socketClient, resSearchFour);
 }
 
+//fonction pour trouver le dernier mot du nom d'un auteur, pour le trie par ordre alphabetique
 char *getNomAuteur(char *nomEntier)
 {
     
@@ -603,6 +608,7 @@ char *getNomAuteur(char *nomEntier)
     return nomAuteur;
 }
 
+//changer une note A B C ou D en chiffre 4 3 2 ou 1 afin de pouvoie appliquer un trie a bulle dessus
 int rateToInt(char *rate)
 {
     // compare rate to A B C and D then return 4 3 2 or 1
@@ -631,6 +637,7 @@ int rateToInt(char *rate)
     return res;
 }
 
+//fonction pour comparer deux string , necessaire pour la fonction rateToInt
 int compareString(char *str1, char *str2)
 {
     int res = 0;

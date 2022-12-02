@@ -9,6 +9,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "../headers/fonctions_serveur.h"
+
 int main(int argc, char *argv[])
 {
     int socketServer, socketClient;
