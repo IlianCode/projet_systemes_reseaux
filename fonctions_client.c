@@ -74,7 +74,7 @@ void handleClientQuery(int socketClient, int typeQuery)
         read(socketClient, &size, sizeof(int));
         char myBook[size];
         read(socketClient, &myBook, size);
-        printf("%s\n", myBook);
+
 
         traitementCaseOne(myBook);
 
@@ -261,9 +261,7 @@ void handleClientQuery(int socketClient, int typeQuery)
             strcat(sendKeyWord, keyWord3);
             break;
         }
-        printf("sendKeyWord : %s\n", sendKeyWord);
         sendMessage(socketClient, sendKeyWord);
-        printf("bien envoyé\n");
 
         // recevoir le tableau de char
         int sizeBookKey = 0;
@@ -271,7 +269,6 @@ void handleClientQuery(int socketClient, int typeQuery)
         char myBookKey[sizeBookKey];
         read(socketClient, &myBookKey, sizeBookKey);
 
-        printf("myBookKey : %s\n", myBookKey);
 
         traitementCaseTwo(myBookKey);
     }
@@ -331,11 +328,9 @@ void handleClientQuery(int socketClient, int typeQuery)
         strcpy(authorAndGenre, author);
         strcat(authorAndGenre, "&");
         strcat(authorAndGenre, genre);
-        printf("authorAndGenre: %s\n", authorAndGenre);
 
         // send authorAndGenre to the server
         sendMessage(socketClient, authorAndGenre);
-        printf("bien envoyé");
 
         // reception of the queryTreatment
         //  reception de queryTreatment
@@ -344,7 +339,6 @@ void handleClientQuery(int socketClient, int typeQuery)
         char myBooks[sizeBooks];
         read(socketClient, &myBooks, sizeBooks);
 
-        printf("\n \n mysbooks : %s \n \n", myBooks);
         // traitementCaseOne(myBooks);
 
         traitementCaseThree(myBooks);
@@ -403,7 +397,6 @@ void handleClientQuery(int socketClient, int typeQuery)
         char myBooksFour[sizeBooksFour];
         read(socketClient, &myBooksFour, sizeBooksFour);
 
-        printf("\n \n mysbooks : %s \n \n", myBooksFour);
         // traitementCaseFour(myBooksFour);
 
         traitementCaseFour(myBooksFour);
@@ -521,7 +514,6 @@ void traitementCaseThree(char *myBooks)
 {
     char cNumber[10];
     strcpy(cNumber, strtok(myBooks, "&"));
-    printf("cNumber : %s \n", cNumber);
     if (atoi(cNumber) == 0)
     {
         printf("========================================\n");

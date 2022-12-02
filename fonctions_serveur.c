@@ -76,7 +76,6 @@ int searchSize(char *str)
 void sendMessage(int socketClient, char *message)
 {
     int size = searchSize(message) * sizeof(char);
-    printf("size of message: %d \n", size);
 
     write(socketClient, &size, sizeof(int));
 
@@ -115,7 +114,6 @@ void researchOne(int socketClient)
     // transform clientReference to string to search in the file
     char clientReferenceString[4];
     sprintf(clientReferenceString, "%d", clientReference);
-    printf("clientReferenceString: %s \n", clientReferenceString);
     char line[1024];
     FILE *fp = fopen("bdd_bibliotheque.txt", "r");
     // read the open file
@@ -163,7 +161,6 @@ void researchOne(int socketClient)
                 strcat(res, resRate);
                 strcat(res, cRate);
 
-                printf("%s \n", res);
 
                 sendMessage(socketClient, res);
                 memset(res, 0, strlen(res));
@@ -199,7 +196,6 @@ void researchTwo(int socketCLient)
     read(socketCLient, &size, sizeof(int));
     char *clientKeywords = malloc(size);
     read(socketCLient, clientKeywords, size);
-    printf("clientKeywords: %s \n", clientKeywords);
 
     char cNbKeyWord[4], cKeyWord1[20], cKeyWord2[20], cKeyWord3[20];
 
@@ -213,15 +209,13 @@ void researchTwo(int socketCLient)
     {
     case 1:
         strcpy(cKeyWord1, strtok(NULL, "&"));
-        printf("cKeyWord1: %s \n", cKeyWord1);
         clavier = cKeyWord1;
 
         break;
     case 2:
         strcpy(cKeyWord1, strtok(NULL, "&"));
         strcpy(cKeyWord2, strtok(NULL, "&"));
-        printf("cKeyWord1: %s \n", cKeyWord1);
-        printf("cKeyWord2: %s \n", cKeyWord2);
+
         clavier = cKeyWord1;
         clavier2 = cKeyWord2;
         break;
@@ -229,9 +223,7 @@ void researchTwo(int socketCLient)
         strcpy(cKeyWord1, strtok(NULL, "&"));
         strcpy(cKeyWord2, strtok(NULL, "&"));
         strcpy(cKeyWord3, strtok(NULL, "&"));
-        printf("cKeyWord1: %s \n", cKeyWord1);
-        printf("cKeyWord2: %s \n", cKeyWord2);
-        printf("cKeyWord3: %s \n", cKeyWord3);
+   
         clavier = cKeyWord1;
         clavier2 = cKeyWord2;
         clavier3 = cKeyWord3;
@@ -260,7 +252,7 @@ void researchTwo(int socketCLient)
     fclose(fp);
     // réouverture du fichier
     fp = fopen("bdd_bibliotheque.txt", "r");
-    printf("size : %d\n", sizeResearchTwo);
+
 
     // create list of struct livre of size number of livre avec mot clé
     struct livre tabLivre[sizeResearchTwo];
@@ -270,7 +262,6 @@ void researchTwo(int socketCLient)
     {
         if ((strstr(line, clavier) != NULL) || (strstr(line, clavier2) != NULL) || (strstr(line, clavier3) != NULL))
         {
-            printf("line: %s \n", line);
             char cRef[4], cAuthor[50], cTitle[50], cType[50], cNbPages[50], cRate[50];
 
             strcpy(cRef, strtok(line, "#"));
@@ -287,26 +278,13 @@ void researchTwo(int socketCLient)
             strcpy(tabLivre[compteur].nbPages, cNbPages);
             strcpy(tabLivre[compteur].rate, cRate);
             strcpy(tabLivre[compteur].fullAuteur, cAuthor);
-            printf("compteur: %d \n", compteur);
 
             compteur++;
         }
     }
     // fermeture du fichier
     fclose(fp);
-    printf("toto \n");
-    // print every tabLivre
-    for (int i = 0; i < sizeResearchTwo; i++)
-    {
-        printf("toto2 \n");
-        printf("reference : %s\n", tabLivre[i].reference);
-        printf("auteur : %s\n", tabLivre[i].auteur);
-        printf("titre : %s\n", tabLivre[i].titre);
-        printf("type : %s\n", tabLivre[i].type);
-        printf("nbPages : %s\n", tabLivre[i].nbPages);
-        printf("rate : %s\n", tabLivre[i].rate);
-        printf("fullAuteur : %s %s\n", tabLivre[i].fullAuteur, tabLivre[i].auteur);
-    }
+
     // for each tabLivre if tabLIvre.auteur is alphabetically before tabLivre[i+1].auteur then swap
     for (int i = 0; i < sizeResearchTwo; i++)
     {
@@ -328,25 +306,10 @@ void researchTwo(int socketCLient)
     char cSizeResearchTwo[10];
     // convert sizeResearchTwo to string
     sprintf(cSizeResearchTwo, "%d", sizeResearchTwo);
-    printf("cSizeResearchTwo: %s \n", cSizeResearchTwo);
-
+    
     for (int i = 0; i < sizeResearchTwo; i++)
     {
-       /* printf("-----------------------\n");
-        printf("reference : %s\n", tabLivre[i].reference);
-        if (strcmp(tabLivre[i].fullAuteur, tabLivre[i].auteur) != 0)
-        {
-            printf("auteur : %s %s\n", tabLivre[i].fullAuteur, tabLivre[i].auteur);
-        }
-        else
-        {
-            printf("auteur : %s\n", tabLivre[i].auteur);
-        }
-        printf("titre : %s\n", tabLivre[i].titre);
-        printf("type : %s\n", tabLivre[i].type);
-        printf("nbPages : %s\n", tabLivre[i].nbPages);
-        printf("rate : %s\n", tabLivre[i].rate);*/
-
+      
         if (i == 0)
         {
             strcpy(res, cSizeResearchTwo);
@@ -387,7 +350,6 @@ void researchTwo(int socketCLient)
         strcat(res, "&");
         strcat(res, tabLivre[i].rate);
     }
-    printf("res : %s \n", res);
 
     if (sizeResearchTwo == 0)
     {
@@ -409,7 +371,6 @@ void researchThree(int socketClient)
     char authorAndGenre[size];
     read(socketClient, &authorAndGenre, size);
 
-    printf("authorAndGenre: %s \n", authorAndGenre);
     // split authorAndGenre in two string
     char *author = strtok(authorAndGenre, "&");
     char *genre = strtok(NULL, "&");
@@ -438,8 +399,6 @@ void researchThree(int socketClient)
             if (strcmp(genre, cType) == 0)
             {
 
-                printf("Reference: %s \n", cRef);
-                printf("Title: %s \n", cTitle);
 
                 strcat(resTitle, "&");
 
@@ -456,14 +415,13 @@ void researchThree(int socketClient)
             }*/
         }
     }
-    printf("count: %d \n", count);
-    printf("resTitle: %s \n", resTitle);
+   
     char newCount[4];
     if (count == 0)
     {
         strcpy(resTitle, "0&");
         sendMessage(socketClient, resTitle);
-        printf("resTitle: %s \n", resTitle);
+       
     }
     else
     {
@@ -484,14 +442,12 @@ void researchFour(int socketClient)
     char authorAndChoice[size];
     read(socketClient, &authorAndChoice, size);
 
-    printf("authorAndChoice: %s \n", authorAndChoice);
+   
 
     // split authorAndChoice in two string
     char *author = strtok(authorAndChoice, "&");
     char *choice = strtok(NULL, "&");
-    printf("author: %s \n", author);
-    printf("choice: %s \n", choice);
-
+    
     // Creation de la structure
     struct livre
     {
@@ -523,7 +479,7 @@ void researchFour(int socketClient)
     fclose(fp);
     // réouverture du fichier
     fp = fopen("bdd_bibliotheque.txt", "r");
-    printf("size : %d\n", sizeFour);
+
 
     // create list of struct livre of size number of livre avec mot clé
     struct livre tabLivre[sizeFour];
@@ -555,21 +511,11 @@ void researchFour(int socketClient)
             compteur++;
         }
     }
-    printf("sortie\n");
     // fermeture du fichier
     fclose(fp);
 
     // print every tabLivre
-    for (int i = 0; i < size; i++)
-    {
-        printf("reference : %s\n", tabLivre[i].reference);
-        printf("auteur : %s\n", tabLivre[i].auteur);
-        printf("titre : %s\n", tabLivre[i].titre);
-        printf("type : %s\n", tabLivre[i].type);
-        printf("nbPages : %s\n", tabLivre[i].nbPages);
-        printf("rate : %s\n", tabLivre[i].rate);
-        printf("fullAuteur : %s %s\n", tabLivre[i].fullAuteur, tabLivre[i].auteur);
-    }
+   
 
 
 
@@ -612,7 +558,7 @@ void researchFour(int socketClient)
     }
 
     // affichage du tableau trié
-    printf("====================================");
+   
     char resSearchFour[1024];
     // transform sizeFour to string
     char sizeFourString[4];
@@ -643,7 +589,7 @@ void researchFour(int socketClient)
     {
         strcpy(resSearchFour, "&0");
     }
-    printf("resSearchFour : %s\n", resSearchFour);
+   
 
     // send message to client
     sendMessage(socketClient, resSearchFour);
@@ -651,19 +597,16 @@ void researchFour(int socketClient)
 
 char *getNomAuteur(char *nomEntier)
 {
-    // printf("nomEntier : %s\n", nomEntier);
-
+    
     // get the last word of the string nomEntier
     char *nomAuteur = strtok(nomEntier, " ");
     char *temp = nomAuteur;
     while (temp != NULL)
     {
-        // printf("AVANT nomAuteur : %s\n", nomAuteur);
-        // printf("AVANT temp : %s\n", temp);
+        
         nomAuteur = temp;
         temp = strtok(NULL, " ");
-        //  printf("APRESnomAuteur : %s\n", nomAuteur);
-        // printf("APRES temp : %s\n", temp);
+        
     }
     return nomAuteur;
 }
@@ -708,6 +651,6 @@ int compareString(char *str1, char *str2)
         }
         i++;
     }
-    printf("res = %d\n", res);
+    
     return res;
 }
