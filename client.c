@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     // give value to the addrClient
     addrClient.sin_family = AF_INET;
     memcpy(&addrClient.sin_addr.s_addr, infos_server->h_addr, sizeof(u_long));
-    addrClient.sin_port = htons(9999);
+    addrClient.sin_port = htons(9998);
 
     // connect to the server
     if (connect(socketClient, (struct sockaddr *)&addrClient, sizeof(addrClient)) == -1)

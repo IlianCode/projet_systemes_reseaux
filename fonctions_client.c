@@ -12,7 +12,6 @@
 
 #include <ctype.h>
 
-
 void displayClientMenu();
 void handleClientQuery(int socketClient, int typeQuery);
 bool askEnd(int socketClient);
@@ -21,8 +20,7 @@ void traitementCaseTwo(char *myBookKey);
 void traitementCaseThree(char *myBooks);
 void traitementCaseFour(char *myBooks);
 
-// function
-
+// fonction pour calculer la taille d'un char
 int searchSize(char *str)
 {
     int i = 0;
@@ -58,7 +56,6 @@ void handleClientQuery(int socketClient, int typeQuery)
             printf("Veuillez entrer une reference. Par exemple: 10 \n");
 
             scanf("%s", checkReference);
-                        printf("toto");
 
             for (int i = 0; i < strlen(checkReference); i++)
             {
@@ -74,10 +71,8 @@ void handleClientQuery(int socketClient, int typeQuery)
                 }
             }
         }
-        
         reference = atoi(checkReference);
         write(socketClient, &reference, sizeof(int));
-        printf("toto2");
 
         //================================================================================================
 
@@ -86,6 +81,7 @@ void handleClientQuery(int socketClient, int typeQuery)
         read(socketClient, &size, sizeof(int));
         char myBook[size];
         read(socketClient, &myBook, size);
+        printf("%s\n", myBook);
 
         traitementCaseOne(myBook);
 
@@ -97,15 +93,24 @@ void handleClientQuery(int socketClient, int typeQuery)
         printf("\nVous avez selectionner la requete 2 !\n ");
         printf("Veuillez le nombre de mots clés que vous souhaitez (max 3).\n Tapez '1', '2' ou '3' ! \n");
 
-        char checkNbKeyWord[2];
         int nbKeyWord = 0;
-
+        char checkNbKeyWord[2];
         // check if typequery is a number then send it to the server
-        // do
-        //{
-        printf("Entrez le nombre de mots clés souhaité (1/2/3): \n");
-        scanf(" %s", checkNbKeyWord);
-        // } while (checkNbKeyWord != '1' && checkNbKeyWord != '2' && checkNbKeyWord != '3');
+        do
+        {
+            printf("Entrez le nombre de mots clés souhaité (1/2/3): \n");
+            scanf("%c", checkNbKeyWord);
+        } while (atoi(checkNbKeyWord) != 1 && atoi(checkNbKeyWord) != 2 && atoi(checkNbKeyWord) != 3);
+        //================================================================================================
+        /* char checkTypeQuery;
+         int typeQuery = 0;
+
+         do
+         {
+             printf("Entrez le numero de la requete souhaité (1/2/3/4):\n");
+             scanf("%c", &checkTypeQuery);
+         } while (checkTypeQuery != '1' && checkTypeQuery != '2' && checkTypeQuery != '3' && checkTypeQuery != '4');*/
+        // =================================================================================================
 
         nbKeyWord = atoi(checkNbKeyWord);
         char sendKeyWord[60];
@@ -169,13 +174,63 @@ void handleClientQuery(int socketClient, int typeQuery)
     else if (typeQuery == 3)
     {
         printf("\nVous avez selectionner la requete 3 !\n ");
-        printf("Veuillez entrer le nom de l'auteur. Par exemple: Victor Hugo \n");
         char author[50];
-        scanf(" %[^\n]", author);
+        bool isNumber = true;
+        // ask to input a int in checkreference and check if it's a number
+        // do it until its a number
+        while (isNumber == true)
+        {
+            printf("Veuillez entrer le nom de l'auteur. Par exemple: Victor Hugo \n");
 
+            scanf(" %[^\n]", author);
+
+            for (int i = 0; i < strlen(author); i++)
+            {
+                if (isdigit(author[i]))
+                {
+                    isNumber = true;
+                    break;
+                }
+                else
+                {
+                    isNumber = false;
+                    printf("\npas un nombre\n");
+
+                }
+            }
+        }
+
+        isNumber = true;
+        char genre[50];
+        //scanf("%s", genre);
+
+        while (isNumber == true)
+        {
         printf("Veuillez entrer le genre recherché. Par exemple: roman \n");
-        char *genre = (char *)malloc((50) * sizeof(char));
-        scanf("%s", genre);
+
+            scanf(" %[^\n]", genre);
+
+            for (int i = 0; i < strlen(genre); i++)
+            {
+                if (isdigit(genre[i]))
+                {
+                    isNumber = true;
+                    break;
+                }
+                else
+                {
+                    isNumber = false;
+                    printf("\npas un nombre\n");
+
+                }
+            }
+        }
+
+
+
+
+
+
 
         // make a string with author and genre separated by a '&'
         char *authorAndGenre = (char *)malloc((100) * sizeof(char));
@@ -263,38 +318,39 @@ void traitementCaseOne(char *myBook)
 
     char cNumber[4], cRef[20], cAuthor[50], cTitle[50], cType[50], cNbPages[50], cRate[50];
     strcpy(cNumber, strtok(myBook, "&"));
-    if (cNumber == 0){
+    if (atoi(cNumber) == 0)
+    {
         printf("========================================\n");
         printf(" \nAucun livre ne correspond à votre recherche !\n\n");
         printf("========================================\n");
-    }else {
-
-    
-    strcpy(cRef, strtok(NULL, "&"));
-    strcpy(cAuthor, strtok(NULL, "&"));
-    strcpy(cTitle, strtok(NULL, "&"));
-    strcpy(cType, strtok(NULL, "&"));
-    strcpy(cNbPages, strtok(NULL, "&"));
-    strcpy(cRate, strtok(NULL, "&"));
-
-    printf("\n-------- voici les informations sur le livre de reference %s --------\n", cRef);
-    printf("Reference: %s \n", cRef);
-    printf("Author: %s \n", cAuthor);
-    printf("Title: %s \n", cTitle);
-    printf("Type: %s \n", cType);
-    printf("NbPages: %s \n", cNbPages);
-    printf("Rate: %s ", cRate);
-    printf("-------------------------------------------------------------------\n");
-
-    if (atoi(cNbPages) > 300)
-    {
-        printf("\nLe nombre page du livre est superieur à 300 !!!! \n\n");
     }
     else
     {
-        printf("\nLe nombre de pages inferieur à 300 !! \n ");
-    }
 
+        strcpy(cRef, strtok(NULL, "&"));
+        strcpy(cAuthor, strtok(NULL, "&"));
+        strcpy(cTitle, strtok(NULL, "&"));
+        strcpy(cType, strtok(NULL, "&"));
+        strcpy(cNbPages, strtok(NULL, "&"));
+        strcpy(cRate, strtok(NULL, "&"));
+
+        printf("\n-------- voici les informations sur le livre de reference %s --------\n", cRef);
+        printf("Reference: %s \n", cRef);
+        printf("Author: %s \n", cAuthor);
+        printf("Title: %s \n", cTitle);
+        printf("Type: %s \n", cType);
+        printf("NbPages: %s \n", cNbPages);
+        printf("Rate: %s ", cRate);
+        printf("-------------------------------------------------------------------\n");
+
+        if (atoi(cNbPages) > 300)
+        {
+            printf("\nLe nombre page du livre est superieur à 300 !!!! \n\n");
+        }
+        else
+        {
+            printf("\nLe nombre de pages inferieur à 300 !! \n ");
+        }
     }
 }
 
@@ -389,30 +445,30 @@ void traitementCaseFour(char *myBooks)
     }
     else
     {
-    printf("\n-------- Voici le(s) livre(s) trouvé en fonction de vos critères de recherche  --------\n");
+        printf("\n-------- Voici le(s) livre(s) trouvé en fonction de vos critères de recherche  --------\n");
 
-    for (int i = 0; i < atoi(cNumber); i++)
-    {
-        char cRef[4], cTitle[50], cAuthor[50], cType[50], cNbPages[50], cRate[4];
+        for (int i = 0; i < atoi(cNumber); i++)
+        {
+            char cRef[4], cTitle[50], cAuthor[50], cType[50], cNbPages[50], cRate[4];
 
-        strcpy(cRef, strtok(NULL, "&"));
-        strcpy(cTitle, strtok(NULL, "&"));
-        strcpy(cAuthor, strtok(NULL, "&"));
-        strcpy(cType, strtok(NULL, "&"));
-        strcpy(cNbPages, strtok(NULL, "&"));
-        strcpy(cRate, strtok(NULL, "&"));
+            strcpy(cRef, strtok(NULL, "&"));
+            strcpy(cTitle, strtok(NULL, "&"));
+            strcpy(cAuthor, strtok(NULL, "&"));
+            strcpy(cType, strtok(NULL, "&"));
+            strcpy(cNbPages, strtok(NULL, "&"));
+            strcpy(cRate, strtok(NULL, "&"));
 
-        printf("-------------------------\n");
-        printf("Livre %d : \n", i + 1);
-        printf("Reference: %s \n", cRef);
-        printf("Title: %s \n", cTitle);
-        printf("Auteur: %s \n", cAuthor);
-        printf("Genre: %s \n", cType);
-        printf("NbPages: %s \n", cNbPages);
-        printf("Note: %s ", cRate);
-        printf("-------------------------\n");
+            printf("-------------------------\n");
+            printf("Livre %d : \n", i + 1);
+            printf("Reference: %s \n", cRef);
+            printf("Title: %s \n", cTitle);
+            printf("Auteur: %s \n", cAuthor);
+            printf("Genre: %s \n", cType);
+            printf("NbPages: %s \n", cNbPages);
+            printf("Note: %s ", cRate);
+            printf("-------------------------\n");
+        }
+
+        printf("-------------------------------------------------------------------\n");
     }
-
-    printf("-------------------------------------------------------------------\n");
-}
 }

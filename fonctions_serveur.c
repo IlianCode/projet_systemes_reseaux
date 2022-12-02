@@ -260,9 +260,7 @@ void researchTwo(int socketCLient)
     // debut trie etc
     // mot clé recherché
 
-    printf("clavier: %s \n", clavier);
-    printf("clavier2: %s \n", clavier2);
-    printf("clavier3: %s \n", clavier3);
+    
     char line[1024];
     FILE *fp = fopen("bdd_bibliotheque.txt", "r");
 
@@ -352,7 +350,7 @@ void researchTwo(int socketCLient)
 
     for (int i = 0; i < sizeResearchTwo; i++)
     {
-        printf("-----------------------\n");
+       /* printf("-----------------------\n");
         printf("reference : %s\n", tabLivre[i].reference);
         if (strcmp(tabLivre[i].fullAuteur, tabLivre[i].auteur) != 0)
         {
@@ -365,7 +363,7 @@ void researchTwo(int socketCLient)
         printf("titre : %s\n", tabLivre[i].titre);
         printf("type : %s\n", tabLivre[i].type);
         printf("nbPages : %s\n", tabLivre[i].nbPages);
-        printf("rate : %s\n", tabLivre[i].rate);
+        printf("rate : %s\n", tabLivre[i].rate);*/
 
         if (i == 0)
         {
@@ -590,6 +588,9 @@ void researchFour(int socketClient)
         printf("rate : %s\n", tabLivre[i].rate);
         printf("fullAuteur : %s %s\n", tabLivre[i].fullAuteur, tabLivre[i].auteur);
     }
+
+
+
     if (choixTrie == 1)
     {
 
@@ -607,6 +608,7 @@ void researchFour(int socketClient)
             }
         }
     }
+
     else if (choixTrie == 2)
     {
 
@@ -720,7 +722,6 @@ int compareString(char *str1, char *str2)
     {
         if (str1[i] != str2[i])
         {
-            // printf("str1[%d] != str2[%d]\n", i, i);
             res = 1;
         }
         i++;
