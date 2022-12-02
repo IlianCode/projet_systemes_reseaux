@@ -29,6 +29,8 @@ all: ./bin/main ./bin/client
 
 ./bin/client: ./bin/client.o ./bin/fonctions_client.o
 	gcc -o ./bin/client ./bin/client.o ./bin/fonctions_client.o
+clean:
+	rm -f ./bin/*.o
 
 
 
