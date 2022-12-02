@@ -409,7 +409,7 @@ void researchTwo(int socketCLient)
     }
     printf("res : %s \n", res);
 
-    if (cSizeResearchTwo == "0")
+    if (sizeResearchTwo == 0)
     {
         strcpy(res, "0&");
     }

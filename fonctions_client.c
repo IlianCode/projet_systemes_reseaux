@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -246,8 +245,8 @@ bool askEnd(int socketClient)
 
     printf("Voulez vous faire une nouvelle recherche?\n Tapez 'non' pour sortir, sinon tapez 'oui' pour faire une nouvelle recherche ! \n");
 
-    char *answer;
-    scanf("%s", answer);
+    char answer[5];
+    scanf(" %s", answer);
     if (strcmp(answer, "non") == 0)
     {
         res = false;
@@ -286,7 +285,6 @@ void traitementCaseOne(char *myBook)
     printf("NbPages: %s \n", cNbPages);
     printf("Rate: %s ", cRate);
     printf("-------------------------------------------------------------------\n");
-    atoi(cRef);
 
     if (atoi(cNbPages) > 300)
     {
