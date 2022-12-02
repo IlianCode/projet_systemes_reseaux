@@ -67,7 +67,7 @@ void handleClientQuery(int socketClient, int typeQuery)
         reference = atoi(checkReference);
         write(socketClient, &reference, sizeof(int));
 
-        //================================================================================================
+
 
         // reception de queryTreatment
         int size = 0;
@@ -78,8 +78,6 @@ void handleClientQuery(int socketClient, int typeQuery)
 
         traitementCaseOne(myBook);
 
-        // case 2:
-        //    break;
     }
     else if (typeQuery == 2)
     {
@@ -332,8 +330,8 @@ void handleClientQuery(int socketClient, int typeQuery)
 
         traitementCaseThree(myBooks);
 
-        //  case 4:
-        //  break;
+        
+        
     }
     else if (typeQuery == 4)
     {
