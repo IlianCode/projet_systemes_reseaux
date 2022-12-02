@@ -264,6 +264,37 @@ void handleClientQuery(int socketClient, int typeQuery)
         printf("Veuillez entrer le nom de l'auteur. Par exemple: Victor Hugo \n");
         char author[50];
         scanf(" %[^\n]", author);
+        bool isNumber = true;
+        while (isNumber == true)
+        {
+            printf("Veuillez entrer le nom de l'auteur. Par exemple: Victor Hugo \n");
+
+            scanf(" %[^\n]", author);
+
+            for (int i = 0; i < strlen(author); i++)
+            {
+                if (isdigit(author[i]))
+                {
+                    isNumber = true;
+                    break;
+                }
+                else
+                {
+                    isNumber = false;
+                    printf("\npas un nombre\n");
+
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
 
         printf("Voulez vous trier les livres:\n  -par nombre de pages? (croissant)\n -par note des lecteurs?\n");
         printf("Tapez 1 pour le nombre de pages, 2 pour la note des lecteurs\n");
