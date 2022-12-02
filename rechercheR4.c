@@ -110,6 +110,7 @@ int main(int argc, char *argv[])
                 }
             }
         }
+        
     }
     else if (choixTrie == 2)
     {
@@ -129,6 +130,8 @@ int main(int argc, char *argv[])
                 }
             }
         }
+
+        
     }
 
     // affichage du tableau trié
