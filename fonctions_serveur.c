@@ -1,3 +1,4 @@
+#include "fonctions_serveur.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -8,26 +9,10 @@
 #include <sys/wait.h>
 #include <string.h>
 #include <ctype.h>
-// function
 
-void createProcessClient(int socketClient, int socketServer);
-void handleClient(int socketClient);
-void end_of_child();
-void sendResponseToQuery(int clientAnswer, int socketClient);
-
-int searchSize(char *str);
-void sendMessage(int socketClient, char *message);
-void queryTreatment(int clientAnswer, int socketClient);
-
-void researchOne(int socketClient);
-void researchTwo(int socketCLient);
-void researchThree(int socketClient);
-
-char *getNomAuteur(char *nomEntier);
-int compareString(char *str1, char *str2);
-int rateToInt(char *rate);
-
-void researchFour(int socketClient);
+void end_of_child(){
+    wait(NULL);
+}
 
 void createProcessClient(int socketClient, int socketServer)
 {
@@ -76,10 +61,7 @@ void handleClient(int socketClient)
     close(socketClient);
 }
 
-void end_of_child()
-{
-    wait(NULL);
-}
+
 
 int searchSize(char *str)
 {
