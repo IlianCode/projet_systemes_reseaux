@@ -66,7 +66,6 @@ void handleClientQuery(int socketClient, int typeQuery)
                 else
                 {
                     isNumber = false;
-                    printf("\npas un nombre\n");
                     break;
                 }
             }
@@ -121,34 +120,145 @@ void handleClientQuery(int socketClient, int typeQuery)
         char keyWord2[20];
         char keyWord3[20];
 
+        bool isNumber = true;
         switch (nbKeyWord)
         {
 
         case 1:
-            printf("Veuillez entrer le mot clé 1.\n");
-            scanf("%s", keyWord1);
+            while (isNumber == true)
+            {
+                printf("Veuillez entrer le mot clé 1.\n");
+
+                scanf(" %[^\n]", keyWord1);
+
+                for (int i = 0; i < strlen(keyWord1); i++)
+                {
+                    if (isdigit(keyWord1[i]))
+                    {
+                        isNumber = true;
+                        break;
+                    }
+                    else
+                    {
+                        isNumber = false;
+                    }
+                }
+            }
+
             strcat(sendKeyWord, keyWord1);
             break;
         case 2:
-            printf("Veuillez entrer le mot clé 1.\n");
-            scanf("%s", keyWord1);
+            isNumber = true;
 
-            printf("Veuillez entrer le mot clé 2.\n");
-            scanf("%s", keyWord2);
+            while (isNumber == true)
+            {
+                printf("Veuillez entrer le mot clé 1.\n");
+
+                scanf(" %[^\n]", keyWord1);
+
+                for (int i = 0; i < strlen(keyWord1); i++)
+                {
+                    if (isdigit(keyWord1[i]))
+                    {
+                        isNumber = true;
+                        break;
+                    }
+                    else
+                    {
+                        isNumber = false;
+                    }
+                }
+            }
+
+            isNumber = true;
+            while (isNumber == true)
+            {
+                printf("Veuillez entrer le mot clé 2.\n");
+
+                scanf(" %[^\n]", keyWord2);
+
+                for (int i = 0; i < strlen(keyWord2); i++)
+                {
+                    if (isdigit(keyWord2[i]))
+                    {
+                        isNumber = true;
+                        break;
+                    }
+                    else
+                    {
+                        isNumber = false;
+                    }
+                }
+            }
 
             strcat(sendKeyWord, keyWord1);
             strcat(sendKeyWord, "&");
             strcat(sendKeyWord, keyWord2);
             break;
         case 3:
-            printf("Veuillez entrer le mot clé 1.\n");
-            scanf("%s", keyWord1);
+            isNumber = true;
 
-            printf("Veuillez entrer le mot clé 2.\n");
-            scanf("%s", keyWord2);
+            while (isNumber == true)
+            {
+                printf("Veuillez entrer le mot clé 1.\n");
 
+                scanf(" %[^\n]", keyWord1);
+
+                for (int i = 0; i < strlen(keyWord1); i++)
+                {
+                    if (isdigit(keyWord1[i]))
+                    {
+                        isNumber = true;
+                        break;
+                    }
+                    else
+                    {
+                        isNumber = false;
+                    }
+                }
+            }
+
+            isNumber = true;
+            while (isNumber == true)
+            {
+                printf("Veuillez entrer le mot clé 2.\n");
+
+                scanf(" %[^\n]", keyWord2);
+
+                for (int i = 0; i < strlen(keyWord2); i++)
+                {
+                    if (isdigit(keyWord2[i]))
+                    {
+                        isNumber = true;
+                        break;
+                    }
+                    else
+                    {
+                        isNumber = false;
+                    }
+                }
+            }
+
+            isNumber = true;
+            while (isNumber == true)
+            {
             printf("Veuillez entrer le mot clé 3.\n");
-            scanf("%s", keyWord3);
+
+                scanf(" %[^\n]", keyWord3);
+
+                for (int i = 0; i < strlen(keyWord3); i++)
+                {
+                    if (isdigit(keyWord3[i]))
+                    {
+                        isNumber = true;
+                        break;
+                    }
+                    else
+                    {
+                        isNumber = false;
+                    }
+                }
+            }
 
             strcat(sendKeyWord, keyWord1);
             strcat(sendKeyWord, "&");
@@ -194,19 +304,17 @@ void handleClientQuery(int socketClient, int typeQuery)
                 else
                 {
                     isNumber = false;
-                    printf("\npas un nombre\n");
-
                 }
             }
         }
 
         isNumber = true;
         char genre[50];
-        //scanf("%s", genre);
+        // scanf("%s", genre);
 
         while (isNumber == true)
         {
-        printf("Veuillez entrer le genre recherché. Par exemple: roman \n");
+            printf("Veuillez entrer le genre recherché. Par exemple: roman \n");
 
             scanf(" %[^\n]", genre);
 
@@ -220,17 +328,9 @@ void handleClientQuery(int socketClient, int typeQuery)
                 else
                 {
                     isNumber = false;
-                    printf("\npas un nombre\n");
-
                 }
             }
         }
-
-
-
-
-
-
 
         // make a string with author and genre separated by a '&'
         char *authorAndGenre = (char *)malloc((100) * sizeof(char));
@@ -261,9 +361,7 @@ void handleClientQuery(int socketClient, int typeQuery)
     else if (typeQuery == 4)
     {
         printf("\nVous avez selectionner la requete 4 !\n ");
-        printf("Veuillez entrer le nom de l'auteur. Par exemple: Victor Hugo \n");
         char author[50];
-        scanf(" %[^\n]", author);
         bool isNumber = true;
         while (isNumber == true)
         {
@@ -281,28 +379,22 @@ void handleClientQuery(int socketClient, int typeQuery)
                 else
                 {
                     isNumber = false;
-                    printf("\npas un nombre\n");
-
                 }
             }
         }
 
+        printf("Voulez vous trier les livres:\n\n -par nombre de pages? (croissant)\n -par note des lecteurs?\n");
 
-
-
-
-
-
-
-
-
-        printf("Voulez vous trier les livres:\n  -par nombre de pages? (croissant)\n -par note des lecteurs?\n");
-        printf("Tapez 1 pour le nombre de pages, 2 pour la note des lecteurs\n");
-        int choice;
-        scanf("%d", &choice);
         // transform choice into a string
-        char *choiceString = (char *)malloc((4) * sizeof(char));
-        sprintf(choiceString, "%d", choice);
+
+        char choiceString[2];
+        // check if typequery is a number then send it to the server
+        do
+        {
+            printf("Tapez 1 pour le nombre de pages, 2 pour la note des lecteurs\n");
+            scanf("%c", choiceString);
+        } while (atoi(choiceString) != 1 && atoi(choiceString) != 2);
+
         // preparer la variable d'envoie
         char *myQuery = malloc(sizeof(char) * 54);
         strcpy(myQuery, author);
