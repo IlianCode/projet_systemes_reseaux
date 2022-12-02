@@ -13,7 +13,7 @@
 #include <ctype.h>
 
 
-#include "fonctions_client.c"
+#include "fonctions_client.h"
 
 int main(int argc, char *argv[])
 {

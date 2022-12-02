@@ -1,3 +1,4 @@
+#include "fonctions_client.h"
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -12,13 +13,6 @@
 
 #include <ctype.h>
 
-void displayClientMenu();
-void handleClientQuery(int socketClient, int typeQuery);
-bool askEnd(int socketClient);
-void traitementCaseOne(char *myBook);
-void traitementCaseTwo(char *myBookKey);
-void traitementCaseThree(char *myBooks);
-void traitementCaseFour(char *myBooks);
 
 // fonction pour calculer la taille d'un char
 int searchSize(char *str)
