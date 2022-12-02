@@ -110,7 +110,7 @@ void researchOne(int socketClient)
     char clientReferenceString[4];
     sprintf(clientReferenceString, "%d", clientReference);
     char line[1024];
-    FILE *fp = fopen("bdd_bibliotheque.txt", "r");
+    FILE *fp = fopen("../sources/bdd_bibliotheque.txt", "r");
     // read the open file
     int count = 0;
     //create a string of count
