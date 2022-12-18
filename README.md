@@ -1,6 +1,7 @@
 # projet_systemes_reseaux
 
-Projet de L3 MIAGE à l'Université Grenoble Alpes consistant en la création d'une application client/serveur sur le modèle du protocole TCP/IP. L'objectif est de formuler des requêtes de livre via le client au serveur qui executera ces requêtes et cherchera dans la bibliothèque (base de données textuelle simpliste).
+Projet de L3 MIAGE à l'Université Grenoble Alpes consistant en la création d'une application client/serveur sur le modèle du protocole TCP/IP.
+<br>L'objectif est de formuler des requêtes de livre via le client au serveur qui executera ces requêtes et cherchera dans la bibliothèque (base de données textuelle simpliste).
  <br>
  
  Une fois le projet téléchargé, il suffit d'ouvrir un terminal et de compiler le projet via la commande ```make``` .
